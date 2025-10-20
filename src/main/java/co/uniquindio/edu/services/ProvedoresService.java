@@ -11,4 +11,5 @@ public interface ProvedoresService {
     void actualizarProveedor(String id, CrearProveedorDTO crearProveedorDTO);
     List<ObtenerProveedorDTO> listaProvedores();
     ObtenerProveedorDTO obtenerProveedor(String id);
+    void eliminarProveedor(String id);
 }

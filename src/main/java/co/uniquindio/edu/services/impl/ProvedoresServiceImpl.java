@@ -29,4 +29,9 @@ public class ProvedoresServiceImpl implements ProvedoresService {
     public ObtenerProveedorDTO obtenerProveedor(String id) {
         return null;
     }
+
+    @Override
+    public void eliminarProveedor(String id) {
+
+    }
 }

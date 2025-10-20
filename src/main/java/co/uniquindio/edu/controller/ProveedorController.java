@@ -45,7 +45,10 @@ public class ProveedorController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, provedor));
     }
 
-
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO<String>> eliminarProveedor(@PathVariable String id) {
+        provedoresService.eliminarProveedor(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  "proveedor eliminado"));
+    }
 
 }
