@@ -3,8 +3,7 @@ package co.uniquindio.edu.controller;
 import co.uniquindio.edu.dto.cliente.CrearClienteDTO;
 import co.uniquindio.edu.dto.cliente.ObtenerClienteDTO;
 import co.uniquindio.edu.dto.response.ResponseDTO;
-import co.uniquindio.edu.exception.ValueConflictException;
-import co.uniquindio.edu.services.ClienteService;
+import co.uniquindio.edu.services.ClientesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ClientesController {
 
-    private final ClienteService clienteService;
+    private final ClientesService clienteService;
 
     @PostMapping
     public ResponseEntity<ResponseDTO<String>> crearCliente(@RequestBody CrearClienteDTO crearClienteDTO){
