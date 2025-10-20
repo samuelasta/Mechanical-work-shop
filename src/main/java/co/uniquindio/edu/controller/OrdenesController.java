@@ -1,10 +1,14 @@
 package co.uniquindio.edu.controller;
 
+import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
+import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
+import co.uniquindio.edu.dto.mecanico.RolDTO;
 import co.uniquindio.edu.dto.orden.ActualizarOrdenDTO;
 import co.uniquindio.edu.dto.orden.CrearOrdenDTO;
+import co.uniquindio.edu.dto.orden.DetalleOrdenDTO;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import co.uniquindio.edu.dto.response.ResponseDTO;
-import co.uniquindio.edu.model.Orden;
+import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
 import co.uniquindio.edu.services.OrdenesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,4 +53,74 @@ public class OrdenesController {
         List<ObtenerOrdenDTO> list = ordenesService.listaOrdenes();
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, list));
     }
+
+    //asignar un mecanico a la orden (ROL, ya sea supervisor o mecanico)
+    @PatchMapping("/{idOrden}/mecanicos/{idMecanico}")
+    public ResponseEntity<ResponseDTO<String>> asignarMecanico(@PathVariable String idOrden,
+                                                               @PathVariable String idMecanico,
+                                                               @RequestBody RolDTO rolDTO) {
+        ordenesService.asignarMecanico(idOrden, idMecanico, rolDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "mecanico asignado exitosamente"));
+    }
+
+    //eliminar un mecanico de una orden
+    @DeleteMapping("/{idOrden}/mecanicos/{idMecanico}")
+    public ResponseEntity<ResponseDTO<String>> eliminarMecanico(@PathVariable String idOrden, @PathVariable String idMecanico){
+        ordenesService.eliminarMecanico(idOrden, idMecanico);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "mecanico eliminado exitosamente"));
+    }
+
+    // obtener los mecanicos de una orden
+    @GetMapping("/{idOrden}/mecanicos")
+    public ResponseEntity<ResponseDTO<List<ObtenerMecanicoOrdenDTO>>>  obtenerMecanicosPorOrden(@PathVariable String idOrden){
+        List<ObtenerMecanicoOrdenDTO> mecanicos = ordenesService.obtenerMecanicosPorOrden(idOrden);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false , mecanicos));
+    }
+
+    // registrar el diagnostico tanto inicial como final, mismo para dar el final
+    @PostMapping("/{idOrden}/diagnosticos")
+    public ResponseEntity<ResponseDTO<String>> registrarDiagnosticos(@PathVariable String idOrden,
+                                                                     @RequestBody CrearDiagnosticoDTO crearDiagnosticoDTO){
+        ordenesService.registrarDiagnosticos(idOrden, crearDiagnosticoDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "diagnostico registrado exitosamente"));
+    }
+
+    // obtener el diagnostico de la orden
+    @GetMapping("/{idOrden}/diagnosticos")
+    public ResponseEntity<ResponseDTO<CrearDiagnosticoDTO>> obtenerDiagnosticos(@PathVariable String idOrden){
+        CrearDiagnosticoDTO diagnostico = ordenesService.obtenerDiagnostico(idOrden);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, diagnostico));
+    }
+
+    // Registrar servicios (se asigna que mecanico lo hizo y en que orden fue)
+    @PostMapping("/{idOrden}/mecanicos/{idMecanico}/servicios/{idServicio}")
+    public ResponseEntity<ResponseDTO<String>> registrarServicios(@PathVariable String idOrden,
+                                                                  @PathVariable String idMecanico,
+                                                                  @PathVariable String idServicio,
+                                                                  @RequestBody DetalleServicioMecanicoDTO detalleServicioMecanicoDTO){
+        ordenesService.registrarServicio(idOrden, idMecanico, idServicio, detalleServicioMecanicoDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "servicio registrado en la orden exitosamente"));
+
+    }
+
+    // Actualizar rol u horas del mecánico en un servicio de una orden
+    @PutMapping("/{idOrden}/mecanicos/{idMecanico}/servicios/{idServicio}")
+    public ResponseEntity<ResponseDTO<String>> actualizarDetalleServicio(@PathVariable String idOrden,
+                                                                         @PathVariable String idMecanico,
+                                                                         @PathVariable String idServicio,
+                                                                         @RequestBody DetalleServicioMecanicoDTO detalleServicioMecanicoDTO) {
+        ordenesService.actualizarDetalleServicio(idOrden, idMecanico, idServicio, detalleServicioMecanicoDTO);
+        return ResponseEntity.ok(new ResponseDTO<>(false, "detalle del servicio actualizado correctamente"));
+    }
+
+    // obtener el detalle de la orden (servicio, mecanico, horastrabajadas, rol y fecha de asignación)
+    @GetMapping("/{idOrden}")
+    public ResponseEntity<ResponseDTO<List<DetalleOrdenDTO>>> obtenerDetalleOrden(@PathVariable String idOrden){
+        List<DetalleOrdenDTO> detalle = ordenesService.obtenerDetalleOrden(idOrden);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, detalle));
+    }
+
+
+
+
 }

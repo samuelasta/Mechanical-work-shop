@@ -48,4 +48,5 @@ public class MecanicoController {
         mecanicoService.eliminarMecanico(id);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  "mecanico eliminado exitosamente" ));
     }
+
 }
