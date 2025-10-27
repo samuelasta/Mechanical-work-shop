@@ -55,6 +55,7 @@ public class Cliente {
     public void actualizarCliente(String id,CrearClienteDTO clienteDTO){
         //muy largo que pereza
     }
+    //rebice el dto porque no tiene la fecharevision entonces que reglas se manejan ahi
     public ObtenerClienteDTO obtenerCliente(String id){
         //obtener cliente
         String sqlCliente="SELECT ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,FECHAREGISTRO FROM CLIENTE WHERE ID =?";
@@ -98,5 +99,34 @@ public class Cliente {
                 (String) direccionRow[2],
                 (String) direccionRow[3]
         );
+    }
+    public List<ObtenerClienteDTO>listarClientes(){
+        //lista cliente
+        String sql="SELECT ID, NOMRE1,NOMRE2,APELLIDO1,APELLIDO2,EMAIL FROM CLIENTE";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new ObtenerClienteDTO(
+                rs.getString("ID"),
+                rs.getString("NOMBRE1"),
+                rs.getString("NOMBRE2"),
+                rs.getString("APELLIDO1"),
+                rs.getString("APELLIDO2"),
+                rs.getString("EMAIL"),
+                null,null,null,null,null
+        ));
+    }
+    public void anhadirTelefono(String clienteId,String numero,String tipo){
+        //añadir telefono
+        String telefonoId=java.util.UUID.randomUUID().toString();
+        String sql="INSERT INTO TELEFONO(ID,CLIENTE_ID,NUMERO) VALUES(?,?,?)";
+        jdbcTemplate.update(sql,telefonoId,tipo,numero,clienteId);
+    }
+    public void cambiarTelefono(String clienteId,String numero){
+        //cambia telefono
+        String sql="UPDATE TELEFONO SET NUMERO=? WHERE CLIENTE_ID=?";
+        jdbcTemplate.update(sql,numero,clienteId);
+    }
+    public void eliminarTelefono(String numero){
+        //elimina telefono
+        String sql="DELETE FROM TELEFONO WHEN CLIENTE_ID=?";
+        jdbcTemplate.update(sql,numero);
     }
 }
