@@ -52,9 +52,17 @@ public class Cliente {
         jdbcTemplate.update("DELETE FROM DIRECCION WHERE ID=?",id);
         jdbcTemplate.update("DELETE FROM CLIENTE WHERE ID=?",id);
     }
-    public void actualizarCliente(String id,CrearClienteDTO clienteDTO){
-        //muy largo que pereza
+    public void actualizarCliente(String clienteId,CrearClienteDTO clienteDTO){
+        //actualizar cliente
+        String sql="UPDATE CLIENTE SET NOMBRE1=?,NOMBRE2=?,APELLIDO1=?,APELLIDO2=?,EMAIL=?";
+        jdbcTemplate.update(sql,
+                clienteDTO.nombre1(),
+                clienteDTO.nombre2(),
+                clienteDTO.apellido1(),
+                clienteDTO.apellido2(),
+                clienteDTO.email(),clienteId);
     }
+
     //rebice el dto porque no tiene la fecharevision entonces que reglas se manejan ahi
     public ObtenerClienteDTO obtenerCliente(String id){
         //obtener cliente
@@ -130,6 +138,7 @@ public class Cliente {
         jdbcTemplate.update(sql,numero);
     }
     public void cambiarDireccion(String clienteId,String direccion,String barrio,String ciudad,String departamento){
+        //cambia direccion
         String sql="UPDATE DIRECCION SET DIRECCION=?,BARRIO=?,CIUDAD=?,DEPARTAMENTO=? WHERE ID=?";
         jdbcTemplate.update(sql,direccion,barrio,ciudad,departamento);
     }
