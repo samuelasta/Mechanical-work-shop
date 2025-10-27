@@ -53,7 +53,7 @@ public class ClienteRepository {
 
     public void actualizarCliente(String clienteId, CrearClienteDTO clienteDTO) {
         //actualizar cliente
-        String sql = "UPDATE CLIENTE SET NOMBRE1=?,NOMBRE2=?,APELLIDO1=?,APELLIDO2=?,EMAIL=?";
+        String sql = "UPDATE CLIENTE SET NOMBRE1=?,NOMBRE2=?,APELLIDO1=?,APELLIDO2=?,EMAIL=? WHERE ID=?";
         jdbcTemplate.update(sql,
                 clienteDTO.nombre1(),
                 clienteDTO.nombre2(),

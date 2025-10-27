@@ -10,4 +10,5 @@ public record CrearMecanicoDTO(String nombre1,
                                // estado se crea automatico (activo, inactivo)
 ) {
     // misma para editar/actualizar mecanico y obtener info del mecanico, y una lista de mecanicos de este tipo
+    //no
 }

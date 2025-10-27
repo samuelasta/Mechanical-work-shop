@@ -40,4 +40,5 @@ public class FacturaRepository {
         ));
     }
     //listar por placa nose porque no encuentro en donde lo tiene como atributo
+    //no se deberia tambie de poder crear factura?
 }
