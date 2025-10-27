@@ -1,5 +1,6 @@
 package co.uniquindio.edu.dto.cliente;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record ObtenerClienteDTO(String id,

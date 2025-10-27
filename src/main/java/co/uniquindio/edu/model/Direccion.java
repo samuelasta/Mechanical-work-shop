@@ -1,6 +1,5 @@
 package co.uniquindio.edu.model;
 
-
 public class Direccion {
 
     private String id;
