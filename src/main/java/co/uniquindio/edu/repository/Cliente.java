@@ -129,4 +129,8 @@ public class Cliente {
         String sql="DELETE FROM TELEFONO WHEN CLIENTE_ID=?";
         jdbcTemplate.update(sql,numero);
     }
+    public void cambiarDireccion(String clienteId,String direccion,String barrio,String ciudad,String departamento){
+        String sql="UPDATE DIRECCION SET DIRECCION=?,BARRIO=?,CIUDAD=?,DEPARTAMENTO=? WHERE ID=?";
+        jdbcTemplate.update(sql,direccion,barrio,ciudad,departamento);
+    }
 }
