@@ -13,11 +13,13 @@ public class ClienteRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void crearCliente(String id, CrearClienteDTO clienteDTO) {
+    public void crearCliente(CrearClienteDTO clienteDTO) {
+        //crea idcliente
+        String clienteId=java.util.UUID.randomUUID().toString();
         //Inserta cliente
         String sqlCliente = "INSERT INTO CLIENTE (ID,NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,FECHAREGISTRO) VALUES(?,?,?,?,?,?,?)";
         jdbcTemplate.update(sqlCliente,
-                id,
+                clienteId,
                 clienteDTO.nombre1(),
                 clienteDTO.nombre2(),
                 clienteDTO.apellido1(),
@@ -29,18 +31,18 @@ public class ClienteRepository {
         //Inserta direccion del cliente
         String sqlDireccion = "INSERT INTO DIRECCION(ID,DIRECCION,BARRIO,CIUDAD,DEPARTAMENTO) VALUES(?,?,?,?,?)";
         jdbcTemplate.update(sqlDireccion,
-                id,
+                clienteId,
                 clienteDTO.direccion(),
                 clienteDTO.barrio(),
                 clienteDTO.ciudad(),
                 clienteDTO.departamento()
         );
         //insertar telefono del cliente
-        String sqlTelefono = "INSERT INTO TELEFONO(ID,CLIENTE_ID,NUMERO)VALUES(?,?,?)";
+        String sqlTelefono = "INSERT INTO TELEFONO(ID,TIPO,NUMERO,CLIENTE_ID)VALUES(?,?,?,?)";
         for (CrearTelefonoDTO t : clienteDTO.telefonos()) {
             //Id para cada telefono PK
             String telefonoId = java.util.UUID.randomUUID().toString();
-            jdbcTemplate.update(sqlTelefono, telefonoId, id, t.numero());
+            jdbcTemplate.update(sqlTelefono, telefonoId,t.tipo(), t.numero(),clienteId);
         }
     }
 
@@ -129,10 +131,10 @@ public class ClienteRepository {
         jdbcTemplate.update(sql, telefonoId, tipo, numero, clienteId);
     }
 
-    public void cambiarTelefono(String clienteId, String numero) {
+    public void actualizarTelefono(String clienteId, String numero,String newNumero) {
         //cambia telefono
-        String sql = "UPDATE TELEFONO SET NUMERO=? WHERE CLIENTE_ID=?";
-        jdbcTemplate.update(sql, numero, clienteId);
+        String sql = "UPDATE TELEFONO SET NUMERO=? WHERE CLIENTE_ID=? AND NUMERO=?";
+        jdbcTemplate.update(sql, newNumero, clienteId,numero);
     }
 
     public void eliminarTelefono(String numero) {
