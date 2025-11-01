@@ -30,7 +30,7 @@ public class MecanicoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO<String>> actualizarMecanico(@PathVariable String id, @RequestBody CrearMecanicoDTO crearMecanicoDTO) {
-        mecanicoService.actualizarMecanico(crearMecanicoDTO);
+        mecanicoService.actualizarMecanico(id, crearMecanicoDTO);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "mecanico actualizado exitosamente"));
     }
 

@@ -22,8 +22,8 @@ public class MecanicoServiceImpl implements MecanicosService {
     }
 
     @Override
-    public void actualizarMecanico(CrearMecanicoDTO crearMecanicoDTO) {
-
+    public void actualizarMecanico(String id, CrearMecanicoDTO crearMecanicoDTO) {
+        mecanicoRepository.actualizarMecanico(id, crearMecanicoDTO);
     }
 
     @Override
