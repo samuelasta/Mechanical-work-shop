@@ -85,4 +85,9 @@ public class OrdenesServiceImpl implements OrdenesService {
     public List<DetalleOrdenDTO> obtenerDetalleOrden(String idOrden) {
         return List.of();
     }
+
+    @Override
+    public List<ObtenerOrdenDTO> listaOrdenesPorCliente(String idCliente) {
+        return List.of();
+    }
 }

@@ -1,6 +1,7 @@
 package co.uniquindio.edu.services.impl;
 
 import co.uniquindio.edu.dto.mecanico.CrearMecanicoDTO;
+import co.uniquindio.edu.dto.mecanico.EstadisticasMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.services.MecanicosService;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,10 @@ public class MecanicoServiceImpl implements MecanicosService {
     @Override
     public void eliminarMecanico(String id) {
 
+    }
+
+    @Override
+    public EstadisticasMecanicoDTO obtenerEstadisticas(String id) {
+        return null;
     }
 }

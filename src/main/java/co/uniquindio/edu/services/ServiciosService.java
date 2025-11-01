@@ -12,4 +12,6 @@ public interface ServiciosService {
     List<ObtenerServicioDTO> listaServicios();
     ObtenerServicioDTO obtenerServicio(String id);
     void eliminarServicio(String id);
+    List<ObtenerServicioDTO> listaServiciosPorMecanico(String id);
+    List<ObtenerServicioDTO> listaServiciosPorVehiculo(String idCliente, String placaVehiculo);
 }

@@ -42,6 +42,13 @@ public class FacturaController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, facturas));
     }
 
+    // Consultar todas las facturas del cliente
+    @GetMapping("/{idCliente}/factura")
+    public ResponseEntity<ResponseDTO<List<ObtenerFacturaDTO>>> obtenerFacturasPorCliente(@PathVariable String idCliente) {
+        List<ObtenerFacturaDTO> facturas = facturaService.obtenerFacturasPorCliente(idCliente);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, facturas));
+    }
+
 
 
 

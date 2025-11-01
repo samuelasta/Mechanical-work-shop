@@ -34,4 +34,14 @@ public class ServiciosServiceImpl implements ServiciosService {
     public void eliminarServicio(String id) {
 
     }
+
+    @Override
+    public List<ObtenerServicioDTO> listaServiciosPorMecanico(String id) {
+        return List.of();
+    }
+
+    @Override
+    public List<ObtenerServicioDTO> listaServiciosPorVehiculo(String idCliente, String placaVehiculo) {
+        return List.of();
+    }
 }

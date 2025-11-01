@@ -29,4 +29,5 @@ public interface OrdenesService {
     void registrarServicio(String idOrden, String idMecanico, String idServicio, DetalleServicioMecanicoDTO detalleServicioMecanicoDTO);
     void actualizarDetalleServicio(String idOrden, String idMecanico, String idServicio, DetalleServicioMecanicoDTO detalleServicioMecanicoDTO);
     List<DetalleOrdenDTO>  obtenerDetalleOrden(String idOrden);
+    List<ObtenerOrdenDTO> listaOrdenesPorCliente(String idCliente);
 }

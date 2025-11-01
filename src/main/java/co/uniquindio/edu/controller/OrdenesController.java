@@ -114,7 +114,7 @@ public class OrdenesController {
     }
 
     // obtener el detalle de la orden (servicio, mecanico, horastrabajadas, rol y fecha de asignación)
-    @GetMapping("/{idOrden}")
+    @GetMapping("/{idOrden}/detalle")
     public ResponseEntity<ResponseDTO<List<DetalleOrdenDTO>>> obtenerDetalleOrden(@PathVariable String idOrden){
         List<DetalleOrdenDTO> detalle = ordenesService.obtenerDetalleOrden(idOrden);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, detalle));
