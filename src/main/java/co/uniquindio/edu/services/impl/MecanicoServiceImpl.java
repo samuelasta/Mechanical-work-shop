@@ -33,12 +33,12 @@ public class MecanicoServiceImpl implements MecanicosService {
 
     @Override
     public ObtenerMecanicoDTO obtenerMecanico(String id) {
-        return null;
+        return mecanicoRepository.obtenerMecanico(id);
     }
 
     @Override
     public void eliminarMecanico(String id) {
-
+        mecanicoRepository.eliminarMecanico(id);
     }
 
     @Override
