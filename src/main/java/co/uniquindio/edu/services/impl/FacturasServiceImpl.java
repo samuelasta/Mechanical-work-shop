@@ -1,32 +1,37 @@
 package co.uniquindio.edu.services.impl;
 
 import co.uniquindio.edu.dto.factura.ObtenerFacturaDTO;
+import co.uniquindio.edu.repository.FacturaRepository;
 import co.uniquindio.edu.services.FacturasService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@RequiredArgsConstructor
 @Service
 public class FacturasServiceImpl implements FacturasService {
 
+    private final FacturaRepository facturaRepository;
 
     @Override
     public ObtenerFacturaDTO obtenerFactura(String idOrden) {
-        return null;
+        return facturaRepository.obtenerFactura(idOrden);
     }
 
     @Override
     public List<ObtenerFacturaDTO> listaFacturasVehiculo(String placa) {
-        return List.of();
+        return facturaRepository.listaFacturasVehiculo(placa);
     }
 
+    @Override
+    public List<ObtenerFacturaDTO> obtenerFacturasPorCliente(String id) {
+        return facturaRepository.listaFacturasCliente(id);
+    }
+
+    // luego, es para ver todas las facturas
     @Override
     public List<ObtenerFacturaDTO> listaFacturas() {
         return List.of();
     }
 
-    @Override
-    public List<ObtenerFacturaDTO> obtenerFacturasPorCliente(String id) {
-        return List.of();
-    }
 }
