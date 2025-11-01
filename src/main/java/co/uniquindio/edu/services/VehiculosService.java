@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface VehiculosService {
 
-    void crearVehiculo(CrearVehiculoDTO crearVehiculoDTO);
-    void actualizarVehiculo(String id, CrearVehiculoDTO crearVehiculoDTO);
+    void crearVehiculo(String idCliente, CrearVehiculoDTO crearVehiculoDTO);
+    void actualizarVehiculo(String id, String idCliente, CrearVehiculoDTO crearVehiculoDTO);
     List<ObtenerVehiculoDTO> listaVehiculos();
     ObtenerVehiculoDTO obtenerVehiculo(String id);
     void eliminarVehiculo(String id);

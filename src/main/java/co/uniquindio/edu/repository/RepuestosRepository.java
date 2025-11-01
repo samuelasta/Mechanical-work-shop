@@ -1,14 +1,12 @@
 package co.uniquindio.edu.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class OrdenesRepository {
+public class RepuestosRepository {
 
     private final JdbcTemplate jdbcTemplate;
-
 }
