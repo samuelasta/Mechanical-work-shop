@@ -2,6 +2,7 @@ package co.uniquindio.edu.repository;
 
 import co.uniquindio.edu.dto.mecanico.CrearMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
+import co.uniquindio.edu.model.enums.TipoEspecializacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,17 +15,30 @@ public class MecanicoRepository {
     private JdbcTemplate jdbcTemplate;
 
     public void crearMecanico(CrearMecanicoDTO crearMecanicoDTO) {
+
         //crea mecanico
-        String sql = "INSERT INTO MECANICO (NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA,ESPECIALIZACION) VALUES(?,?,?,?,?,?,?)";
-        jdbcTemplate.update(sql,
+        String mecanicoId = java.util.UUID.randomUUID().toString();
+        String sqlMecanico = "INSERT INTO MECANICO (ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA) VALUES(?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sqlMecanico,
+                mecanicoId,
                 crearMecanicoDTO.nombre1(),
                 crearMecanicoDTO.nombre2(),
                 crearMecanicoDTO.apellido1(),
                 crearMecanicoDTO.apellido2(),
                 crearMecanicoDTO.email(),
-                crearMecanicoDTO.experiencia(),
-                crearMecanicoDTO.especializacion()
+                crearMecanicoDTO.experiencia()
         );
+
+
+        String sqlEspecializacion = "INSERT INTO ESPECIALIZACION(ID, NOMBRE, MECANICO_ID) VALUES(?,?,?)";
+        for(TipoEspecializacion tipoEspecializacion : crearMecanicoDTO.especializacion()){
+            String especializacionId = java.util.UUID.randomUUID().toString();
+            jdbcTemplate.update(sqlEspecializacion,
+                    especializacionId,
+                    tipoEspecializacion.toString(),
+                    mecanicoId);
+        }
+
     }
 
     public void actualizarMecanico(String mecanicoId, CrearMecanicoDTO crearMecanicoDTO) {
