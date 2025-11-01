@@ -8,12 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 @Repository
 public class FacturaRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
     public ObtenerFacturaDTO obtenerFactura(String ordenId){
-        String sql="SELECT ID, CONSECUTIVO, ESTADO, FECHAEMISION, IMPUESTOS, VALORTOTAL, ORDENID FROM FACTURA WHERE ORDENID=?";
+        String sql="SELECT ID, CONSECUTIVO, ESTADO, FECHAEMISION, IMPUESTOS, VALORTOTAL, ORDENID FROM FACTURA WHERE ORDEN_ID=?";
         return jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) -> new ObtenerFacturaDTO(
                         rs.getString("ID"),
@@ -25,6 +27,7 @@ public class FacturaRepository {
                         rs.getString("ORDENID")
                 ) );
     }
+
     public List<ObtenerFacturaDTO> listaFacturasVehiculo(){
         //listar facturas
         String sql="SELECT id, CONSECUTIVO, ESTADO, FECHAEMISION, IMPUESTOS, VALORTOTAL, ORDENID FROM FACTURA";

@@ -9,4 +9,5 @@ public interface FacturasService {
     ObtenerFacturaDTO obtenerFactura(String idOrden);
     List<ObtenerFacturaDTO> listaFacturasVehiculo(String placa);
     List<ObtenerFacturaDTO> listaFacturas();
+    List<ObtenerFacturaDTO> obtenerFacturasPorCliente(String id);
 }

@@ -2,29 +2,41 @@ package co.uniquindio.edu.services.impl;
 
 import co.uniquindio.edu.dto.cliente.CrearClienteDTO;
 import co.uniquindio.edu.dto.cliente.ObtenerClienteDTO;
+import co.uniquindio.edu.dto.factura.ObtenerFacturaDTO;
+import co.uniquindio.edu.repository.ClienteRepository;
 import co.uniquindio.edu.services.ClientesService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@RequiredArgsConstructor
 @Service
 public class ClientesServiceImpl implements ClientesService {
+
+    private final ClienteRepository clienteRepository;
 
     @Override
     public void crearCliente(CrearClienteDTO CrearClienteDTO) {
 
+        clienteRepository.crearCliente(CrearClienteDTO);
     }
 
     @Override
     public void eliminarCliente(String id) {
 
+        clienteRepository.eliminarCliente(id);
     }
 
     @Override
-    public void actualizarCliente(CrearClienteDTO CrearClienteDTO) {
+    public void actualizarCliente(String id, CrearClienteDTO CrearClienteDTO) {
 
+        clienteRepository.actualizarCliente(id, CrearClienteDTO);
     }
 
     @Override
     public ObtenerClienteDTO obtenerCliente(String id) {
-        return null;
+        return clienteRepository.obtenerCliente(id);
     }
+
 }

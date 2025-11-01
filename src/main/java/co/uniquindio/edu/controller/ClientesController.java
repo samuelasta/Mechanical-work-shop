@@ -36,9 +36,9 @@ public class ClientesController {
         return ResponseEntity.status(HttpStatus.OK).body( new ResponseDTO<>(false, "Cliente Eliminado"));
     }
 
-    @PutMapping
-    public ResponseEntity<ResponseDTO<String>> actualizarCliente(@RequestBody CrearClienteDTO crearClienteDTO){
-        clienteService.actualizarCliente(crearClienteDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDTO<String>> actualizarCliente(@PathVariable String id, @RequestBody CrearClienteDTO crearClienteDTO){
+        clienteService.actualizarCliente(id, crearClienteDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body( new ResponseDTO<>(false, "Cliente Creado"));
     }
 

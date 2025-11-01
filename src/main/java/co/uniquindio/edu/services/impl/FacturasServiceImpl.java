@@ -24,4 +24,9 @@ public class FacturasServiceImpl implements FacturasService {
     public List<ObtenerFacturaDTO> listaFacturas() {
         return List.of();
     }
+
+    @Override
+    public List<ObtenerFacturaDTO> obtenerFacturasPorCliente(String id) {
+        return List.of();
+    }
 }

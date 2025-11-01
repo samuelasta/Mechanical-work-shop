@@ -1,23 +1,65 @@
 package co.uniquindio.edu.repository;
 
 import co.uniquindio.edu.dto.cliente.*;
+import co.uniquindio.edu.exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
+@RequiredArgsConstructor
 public class ClienteRepository {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
+    private final JdbcTemplate jdbcTemplate;
+
+    @Transactional
     public void crearCliente(CrearClienteDTO clienteDTO) {
+
+        // insertar el departamento del cliente
+        String departamentoId = java.util.UUID.randomUUID().toString();
+        String sqlDepartamento = "INSERT INTO DEPARTAMENTO(ID, DEPARTAMENTO) VALUES(?,?)";
+        jdbcTemplate.update(sqlDepartamento,
+                departamentoId,
+                clienteDTO.departamento()
+        );
+
+        // incertar la ciudad del cliente
+        String ciudadId = java.util.UUID.randomUUID().toString();
+        String sqlCiudad = "INSERT INTO CIUDAD(ID, CIUDAD, DEPARTAMENTO_ID) VALUES(?,?,?)";
+        jdbcTemplate.update(sqlCiudad,
+                ciudadId,
+                clienteDTO.ciudad(),
+                departamentoId
+        );
+
+        // Insertar el barrio del cliente
+        String barrioId = java.util.UUID.randomUUID().toString();
+        String sqlBarrio = "INSERT INTO BARRIO(ID, BARRIO, CIUDAD_ID) VALUES(?,?,?)";
+        jdbcTemplate.update(sqlBarrio,
+                barrioId,
+                clienteDTO.barrio(),
+                ciudadId
+        );
+
+        //Inserta direccion del cliente
+        String direccionId=java.util.UUID.randomUUID().toString();
+        String sqlDireccion = "INSERT INTO DIRECCION(ID,DIRECCION,BARRIO_ID) VALUES(?,?,?)";
+        jdbcTemplate.update(sqlDireccion,
+                direccionId,
+                clienteDTO.direccion(),
+                barrioId
+        );
+
         //crea idcliente
         String clienteId=java.util.UUID.randomUUID().toString();
         //Inserta cliente
-        String sqlCliente = "INSERT INTO CLIENTE (ID,NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,FECHAREGISTRO) VALUES(?,?,?,?,?,?,?)";
+        String sqlCliente = "INSERT INTO CLIENTES(ID,NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,FECHAREGISTRO, DIRECCION_ID, ESTADO) VALUES(?,?,?,?,?,?,?,?,?)";
         jdbcTemplate.update(sqlCliente,
                 clienteId,
                 clienteDTO.nombre1(),
@@ -25,94 +67,184 @@ public class ClienteRepository {
                 clienteDTO.apellido1(),
                 clienteDTO.apellido2(),
                 clienteDTO.email(),
-                Timestamp.valueOf(java.time.LocalDateTime.now())
+                Timestamp.valueOf(java.time.LocalDateTime.now()),
+                direccionId,
+                "CREADO"
         );
 
-        //Inserta direccion del cliente
-        String sqlDireccion = "INSERT INTO DIRECCION(ID,DIRECCION,BARRIO,CIUDAD,DEPARTAMENTO) VALUES(?,?,?,?,?)";
-        jdbcTemplate.update(sqlDireccion,
-                clienteId,
-                clienteDTO.direccion(),
-                clienteDTO.barrio(),
-                clienteDTO.ciudad(),
-                clienteDTO.departamento()
-        );
-        //insertar telefono del cliente
-        String sqlTelefono = "INSERT INTO TELEFONO(ID,TIPO,NUMERO,CLIENTE_ID)VALUES(?,?,?,?)";
+
+        //insertar telefonos del cliente
+        String sqlTelefono = "INSERT INTO TELEFONO(ID,TIPO,NUMERO,CLIENTES_ID)VALUES(?,?,?,?)";
         for (CrearTelefonoDTO t : clienteDTO.telefonos()) {
             //Id para cada telefono PK
             String telefonoId = java.util.UUID.randomUUID().toString();
-            jdbcTemplate.update(sqlTelefono, telefonoId,t.tipo(), t.numero(),clienteId);
+            jdbcTemplate.update(sqlTelefono,
+                    telefonoId,
+                    t.tipo(),
+                    t.numero(),
+                    clienteId);
         }
     }
 
-    public void eliminarCliente(String id) {
-        //elimina cliente
-        jdbcTemplate.update("DELETE FROM TELEFONO WHERE CLIENTE_ID=?", id);
-        jdbcTemplate.update("DELETE FROM DIRECCION WHERE ID=?", id);
-        jdbcTemplate.update("DELETE FROM CLIENTE WHERE ID=?", id);
-    }
+    @Transactional
+    public void eliminarCliente(String idCliente) {
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM CLIENTES WHERE ID = ?",
+                Integer.class,
+                idCliente
+        );
 
-    public void actualizarCliente(String clienteId, CrearClienteDTO clienteDTO) {
-        //actualizar cliente
-        String sql = "UPDATE CLIENTE SET NOMBRE1=?,NOMBRE2=?,APELLIDO1=?,APELLIDO2=?,EMAIL=? WHERE ID=?";
-        jdbcTemplate.update(sql,
-                clienteDTO.nombre1(),
-                clienteDTO.nombre2(),
-                clienteDTO.apellido1(),
-                clienteDTO.apellido2(),
-                clienteDTO.email(), clienteId);
-    }
+        if (count == null || count == 0) {
+            throw new ResourceNotFoundException("No existe un cliente con ese ID.");
+        }
 
-    //rebice el dto porque no tiene la fecharevision entonces que reglas se manejan ahi
-    public ObtenerClienteDTO obtenerCliente(String id) {
-        //obtener cliente
-        String sqlCliente = "SELECT ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,FECHAREGISTRO FROM CLIENTE WHERE ID =?";
-        var clienteRow = jdbcTemplate.queryForObject(sqlCliente,
-                (rs, rowNum) -> new Object[]{
-                        rs.getString("ID"),
-                        rs.getString("NOMBRE1"),
-                        rs.getString("NOMBRE2"),
-                        rs.getString("APELLIDO1"),
-                        rs.getString("APELLIDO2"),
-                        rs.getString("EMAIL"),
-                }, id);
-        //obtener direccion
-        String sqlDireccion = "SELECT DIRECCION,BARRIO,CIUDAD,DEPARTAMENTO FROM DIRECCION WHERE ID=?";
-        var direccionRow = jdbcTemplate.queryForObject(sqlDireccion,
-                (rs, rowNum) -> new Object[]{
-                        rs.getString("DIRECCION"),
-                        rs.getString("BARRIO"),
-                        rs.getString("CIUDAD"),
-                        rs.getString("DEPARTAMENTO")
-                }, id);
-
-        //obetner telefonos
-        String sqlTelefonos = "SELECT ID,NUMERO FROM TELEFONO WHERE CLIENTE_ID=?";
-        List<CrearTelefonoDTO> telefonos = jdbcTemplate.query(sqlTelefonos,
-                (rs, rowNum) -> new CrearTelefonoDTO(
-                        rs.getString("TIPOTELEFONO"),
-                        rs.getString("NUMERO")
-                ), id);
-        //contruye el final DTO
-        return new ObtenerClienteDTO(
-                (String) clienteRow[0],
-                (String) clienteRow[1],
-                (String) clienteRow[2],
-                (String) clienteRow[3],
-                (String) clienteRow[4],
-                (String) clienteRow[5],
-                telefonos,
-                (String) direccionRow[0],
-                (String) direccionRow[1],
-                (String) direccionRow[2],
-                (String) direccionRow[3]
+        jdbcTemplate.update(
+                "UPDATE CLIENTES SET ESTADO = ? WHERE ID = ?",
+                "INACTIVO",
+                idCliente
         );
     }
 
+
+    @Transactional
+    public void actualizarCliente(String clienteId, CrearClienteDTO dto) {
+
+        try {
+            //  Obtener IDs en cadena jerárquica
+            String direccionId = jdbcTemplate.queryForObject(
+                    "SELECT DIRECCION_ID FROM CLIENTES WHERE ID = ?", String.class, clienteId);
+
+            String barrioId = jdbcTemplate.queryForObject(
+                    "SELECT BARRIO_ID FROM DIRECCION WHERE ID = ?", String.class, direccionId);
+
+            String ciudadId = jdbcTemplate.queryForObject(
+                    "SELECT CIUDAD_ID FROM BARRIO WHERE ID = ?", String.class, barrioId);
+
+            String departamentoId = jdbcTemplate.queryForObject(
+                    "SELECT DEPARTAMENTO_ID FROM CIUDAD WHERE ID = ?", String.class, ciudadId);
+
+            //  Actualizar cliente
+            String sqlCliente = """
+            UPDATE CLIENTES
+            SET NOMBRE1=?, NOMBRE2=?, APELLIDO1=?, APELLIDO2=?, EMAIL=?
+            WHERE ID=?
+        """;
+            jdbcTemplate.update(sqlCliente,
+                    dto.nombre1(),
+                    dto.nombre2(),
+                    dto.apellido1(),
+                    dto.apellido2(),
+                    dto.email(),
+                    clienteId
+            );
+
+            // Actualizar dirección y jerarquía de ubicación
+            jdbcTemplate.update("UPDATE DIRECCION SET DIRECCION=? WHERE ID=?", dto.direccion(), direccionId);
+            jdbcTemplate.update("UPDATE BARRIO SET BARRIO=? WHERE ID=?", dto.barrio(), barrioId);
+            jdbcTemplate.update("UPDATE CIUDAD SET CIUDAD=? WHERE ID=?", dto.ciudad(), ciudadId);
+            jdbcTemplate.update("UPDATE DEPARTAMENTO SET DEPARTAMENTO=? WHERE ID=?", dto.departamento(), departamentoId);
+
+            if (dto.telefonos() != null && !dto.telefonos().isEmpty()) {
+                jdbcTemplate.update("DELETE FROM TELEFONO WHERE CLIENTES_ID = ?", clienteId);
+                for (CrearTelefonoDTO t : dto.telefonos()) {
+                    String telefonoId = UUID.randomUUID().toString();
+                    jdbcTemplate.update(
+                            "INSERT INTO TELEFONO (ID, TIPO, NUMERO, CLIENTES_ID) VALUES (?, ?, ?, ?)",
+                            telefonoId, t.tipo(), t.numero(), clienteId
+                    );
+                }
+            }
+
+        } catch (Exception e) {
+            throw new ResourceNotFoundException(" No se encontró el cliente o su ubicación asociada (ID: " + clienteId + ")");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ObtenerClienteDTO obtenerCliente(String clienteId) {
+        try {
+            // 1) Traer cliente + ubicación completa
+            String sqlClienteUbic = """
+            SELECT
+              c.ID,
+              c.NOMBRE1,
+              c.NOMBRE2,
+              c.APELLIDO1,
+              c.APELLIDO2,
+              c.EMAIL,
+              c.FECHAREGISTRO,
+              d.DIRECCION,
+              b.BARRIO,
+              ci.CIUDAD,
+              dep.DEPARTAMENTO
+            FROM CLIENTES c
+            JOIN DIRECCION d     ON d.ID = c.DIRECCION_ID
+            JOIN BARRIO b        ON b.ID = d.BARRIO_ID
+            JOIN CIUDAD ci       ON ci.ID = b.CIUDAD_ID
+            JOIN DEPARTAMENTO dep ON dep.ID = ci.DEPARTAMENTO_ID
+            WHERE c.ID = ?
+              AND c.ESTADO <> 'INACTIVO'
+        """;
+
+            var cliente = jdbcTemplate.queryForObject(
+                    sqlClienteUbic,
+                    (rs, rowNum) -> new Object[]{
+                            rs.getString("ID"),
+                            rs.getString("NOMBRE1"),
+                            rs.getString("NOMBRE2"),
+                            rs.getString("APELLIDO1"),
+                            rs.getString("APELLIDO2"),
+                            rs.getString("EMAIL"),
+                            rs.getTimestamp("FECHAREGISTRO"),
+                            rs.getString("DIRECCION"),
+                            rs.getString("BARRIO"),
+                            rs.getString("CIUDAD"),
+                            rs.getString("DEPARTAMENTO")
+                    },
+                    clienteId
+            );
+
+            // Traer teléfonos del cliente
+            String sqlTelefonos = """
+            SELECT TIPO, NUMERO
+            FROM TELEFONO
+            WHERE CLIENTES_ID = ?
+            ORDER BY ID
+        """;
+            List<CrearTelefonoDTO> telefonos = jdbcTemplate.query(
+                    sqlTelefonos,
+                    (rs, rowNum) -> new CrearTelefonoDTO(
+                            rs.getString("TIPO"),
+                            rs.getString("NUMERO")
+                    ),
+                    clienteId
+            );
+
+            // 3) Construir DTO final (ajusta el constructor a tu clase real)
+            return new ObtenerClienteDTO(
+                    (String) cliente[0], // id
+                    (String) cliente[1], // nombre1
+                    (String) cliente[2], // nombre2
+                    (String) cliente[3], // apellido1
+                    (String) cliente[4], // apellido2
+                    (String) cliente[5], // email
+                    telefonos,
+                    (String) cliente[7], // direccion
+                    (String) cliente[8], // barrio
+                    (String) cliente[9], // ciudad
+                    (String) cliente[10] // departamento
+
+            );
+
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("No se encontró el cliente activo con ID: " + clienteId);
+        }
+    }
+
+
     public List<ObtenerClienteDTO> listarClientes() {
         //lista cliente
-        String sql = "SELECT ID, NOMRE1,NOMRE2,APELLIDO1,APELLIDO2,EMAIL FROM CLIENTE";
+        String sql = "SELECT ID, NOMRE1,NOMRE2,APELLIDO1,APELLIDO2,EMAIL FROM CLIENTES";
         return jdbcTemplate.query(sql, (rs, rowNum) -> new ObtenerClienteDTO(
                 rs.getString("ID"),
                 rs.getString("NOMBRE1"),
@@ -124,28 +256,4 @@ public class ClienteRepository {
         ));
     }
 
-    public void anhadirTelefono(String clienteId, String numero, String tipo) {
-        //añadir telefono
-        String telefonoId = java.util.UUID.randomUUID().toString();
-        String sql = "INSERT INTO TELEFONO(ID,CLIENTE_ID,NUMERO) VALUES(?,?,?)";
-        jdbcTemplate.update(sql, telefonoId, tipo, numero, clienteId);
-    }
-
-    public void actualizarTelefono(String clienteId, String numero,String newNumero) {
-        //cambia telefono
-        String sql = "UPDATE TELEFONO SET NUMERO=? WHERE CLIENTE_ID=? AND NUMERO=?";
-        jdbcTemplate.update(sql, newNumero, clienteId,numero);
-    }
-
-    public void eliminarTelefono(String numero) {
-        //elimina telefono
-        String sql = "DELETE FROM TELEFONO WHEN CLIENTE_ID=?";
-        jdbcTemplate.update(sql, numero);
-    }
-
-    public void cambiarDireccion(String clienteId, String direccion, String barrio, String ciudad, String departamento) {
-        //cambia direccion
-        String sql = "UPDATE DIRECCION SET DIRECCION=?,BARRIO=?,CIUDAD=?,DEPARTAMENTO=? WHERE ID=?";
-        jdbcTemplate.update(sql, direccion, barrio, ciudad, departamento);
-    }
 }
