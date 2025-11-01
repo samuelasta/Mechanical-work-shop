@@ -29,13 +29,14 @@ public class ServicioRepository {
         String servicioId = UUID.randomUUID().toString();
 
         // Insertar servicio (fecha actual)
-        String sql = "INSERT INTO SERVICIO (ID, DESCRIPCION, TIPO, FECHA, COSTOUNITARIO) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO SERVICIO (ID, DESCRIPCION, TIPO, FECHA, COSTOUNITARIO, ESTADO) VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 servicioId,
                 crearServicioDTO.descripcion(),
                 crearServicioDTO.tipoServicio().toString(),
                 Date.valueOf(LocalDate.now()),
-                crearServicioDTO.costoUnitario()
+                crearServicioDTO.costoUnitario(),
+                "ACTIVO"
         );
     }
 
@@ -98,7 +99,7 @@ public class ServicioRepository {
         String sql = """
             SELECT ID, DESCRIPCION, TIPO, COSTOUNITARIO
               FROM SERVICIO
-             WHERE ID = ?
+             WHERE ID = ? AND ESTADO <> 'INACTIVO'
         """;
 
         try {
