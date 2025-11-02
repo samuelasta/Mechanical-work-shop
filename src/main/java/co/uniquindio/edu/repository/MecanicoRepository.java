@@ -2,6 +2,7 @@ package co.uniquindio.edu.repository;
 
 import co.uniquindio.edu.dto.mecanico.CrearMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
+import co.uniquindio.edu.exception.BadRequestException;
 import co.uniquindio.edu.exception.ResourceNotFoundException;
 import co.uniquindio.edu.model.enums.TipoEspecializacion;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 @RequiredArgsConstructor
 @Repository
@@ -23,7 +25,7 @@ public class MecanicoRepository {
 
         //crea mecanico
         String mecanicoId = java.util.UUID.randomUUID().toString();
-        String sqlMecanico = "INSERT INTO MECANICO (ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA, ESTADO) VALUES(?,?,?,?,?,?,?,?)";
+        String sqlMecanico = "INSERT INTO MECANICO (ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA) VALUES(?,?,?,?,?,?,?)";
         jdbcTemplate.update(sqlMecanico,
                 mecanicoId,
                 crearMecanicoDTO.nombre1(),
@@ -31,8 +33,7 @@ public class MecanicoRepository {
                 crearMecanicoDTO.apellido1(),
                 crearMecanicoDTO.apellido2(),
                 crearMecanicoDTO.email(),
-                crearMecanicoDTO.experiencia(),
-                crearMecanicoDTO.estado()
+                crearMecanicoDTO.experiencia()
         );
 
 
@@ -86,31 +87,31 @@ public class MecanicoRepository {
 
     @Transactional(readOnly = true)
     public ObtenerMecanicoDTO obtenerMecanico(String id) {
-
         try {
-            // Obtener los datos del mecánico
+            // Consulta principal del mecánico
             String sqlMecanico = """
             SELECT ID, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, EXPERIENCIA, EMAIL
             FROM MECANICO
             WHERE ID = ? AND ESTADO <> 'INACTIVO'
         """;
 
-            // Mapear directamente a un record parcial (sin la lista todavía)
-            var mecanicoBase = jdbcTemplate.queryForObject(
+            // Mapea directamente al DTO base
+            ObtenerMecanicoDTO mecanico = jdbcTemplate.queryForObject(
                     sqlMecanico,
-                    (rs, rowNum) -> new Object[]{
+                    (rs, rowNum) -> new ObtenerMecanicoDTO(
                             rs.getString("ID"),
                             rs.getString("NOMBRE1"),
                             rs.getString("NOMBRE2"),
                             rs.getString("APELLIDO1"),
                             rs.getString("APELLIDO2"),
-                            rs.getString("EXPERIENCIA"),
                             rs.getString("EMAIL"),
-                    },
+                            rs.getInt("EXPERIENCIA"),
+                            new ArrayList<>() // se llena más abajo
+                    ),
                     id
             );
 
-            // Obtener las especializaciones del mecánico
+            // Consulta las especializaciones del mecánico
             String sqlEspecializaciones = """
             SELECT NOMBRE
             FROM ESPECIALIZACION
@@ -123,20 +124,19 @@ public class MecanicoRepository {
                     id
             );
 
-            // Construir el record con todos los datos
+            // Asigna las especializaciones al DTO (crea una copia con la lista actualizada)
             return new ObtenerMecanicoDTO(
-                    (String) mecanicoBase[0],
-                    (String) mecanicoBase[1],
-                    (String) mecanicoBase[2],
-                    (String) mecanicoBase[3],
-                    (String) mecanicoBase[4],
-                    (String) mecanicoBase[5],
-                    (int) mecanicoBase[6],
+                    mecanico.id(),
+                    mecanico.nombre1(),
+                    mecanico.nombre2(),
+                    mecanico.apellido1(),
+                    mecanico.apellido2(),
+                    mecanico.email(),
+                    mecanico.experiencia(),
                     especializaciones
             );
-
         } catch (Exception e) {
-            throw new ResourceNotFoundException("No se encontró el mecánico con ID: " + id);
+            throw new BadRequestException("Error al consultar el mecánico: " + e.getMessage());
         }
     }
 
