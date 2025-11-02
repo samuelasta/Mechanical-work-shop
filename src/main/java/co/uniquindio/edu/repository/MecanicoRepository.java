@@ -37,7 +37,7 @@ public class MecanicoRepository {
                 crearMecanicoDTO.apellido2(),
                 crearMecanicoDTO.email(),
                 crearMecanicoDTO.experiencia(),
-                crearMecanicoDTO.estado()
+                "ACTIVO"
         );
 
 

@@ -2,6 +2,7 @@ package co.uniquindio.edu.services.impl;
 
 import co.uniquindio.edu.dto.servicio.CrearServicioDTO;
 import co.uniquindio.edu.dto.servicio.ObtenerServicioDTO;
+import co.uniquindio.edu.repository.ServicioRepository;
 import co.uniquindio.edu.services.ServiciosService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,40 +13,40 @@ import java.util.List;
 @Service
 public class ServiciosServiceImpl implements ServiciosService {
 
-    private final ServiciosService serviciosService;
+    private final ServicioRepository servicioRepository;
 
     @Override
     public void crearServicio(CrearServicioDTO crearServicioDTO) {
-        serviciosService.crearServicio(crearServicioDTO);
+        servicioRepository.crearServicio(crearServicioDTO);
     }
 
     @Override
     public void actualizarServicio(String id, CrearServicioDTO crearServicioDTO) {
-        serviciosService.actualizarServicio(id, crearServicioDTO);
+        servicioRepository.actualizarServicio(id, crearServicioDTO);
     }
 
     @Override
     public List<ObtenerServicioDTO> listaServicios() {
-        return serviciosService.listaServicios();
+        return servicioRepository.listaServicios();
     }
 
     @Override
     public ObtenerServicioDTO obtenerServicio(String id) {
-        return serviciosService.obtenerServicio(id);
+        return servicioRepository.obtenerServicio(id);
     }
 
     @Override
     public void eliminarServicio(String id) {
-        serviciosService.eliminarServicio(id);
+        servicioRepository.eliminarServicio(id);
     }
 
     @Override
     public List<ObtenerServicioDTO> listaServiciosPorMecanico(String id) {
-        return serviciosService.listaServiciosPorMecanico(id);
+        return servicioRepository.listaServiciosPorMecanico(id);
     }
 
     @Override
     public List<ObtenerServicioDTO> listaServiciosPorVehiculo(String idCliente, String placaVehiculo) {
-        return serviciosService.listaServiciosPorVehiculo(idCliente, placaVehiculo);
+        return servicioRepository.listaServiciosPorVehiculo(idCliente, placaVehiculo);
     }
 }
