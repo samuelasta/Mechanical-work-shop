@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import co.uniquindio.edu.exception.BadRequestException;
 import co.uniquindio.edu.exception.ResourceNotFoundException;
 import co.uniquindio.edu.model.enums.EstadoOrden;
+import co.uniquindio.edu.model.enums.Rol;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -23,6 +24,7 @@ import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Repository
@@ -195,40 +197,221 @@ public class OrdenesRepository {
 
 
 
+    @Transactional(readOnly = true)
     public List<ObtenerMecanicoOrdenDTO> obtenerMecanicosPorOrden(String idOrden) {
-        return List.of();
+
+    String sql = """
+        SELECT 
+            m.ID,
+            m.NOMBRE1,
+            m.NOMBRE2,
+            m.APELLIDO1,
+            m.APELLIDO2,
+            m.EMAIL,
+            m.EXPERIENCIA,
+            mos.ROL
+        FROM MOS mos
+        JOIN MECANICO m ON mos.MECANICO_ID = m.ID
+        WHERE mos.ORDEN_ID = ?
+    """;
+
+    try {
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new ObtenerMecanicoOrdenDTO(
+                rs.getString("ID"),
+                rs.getString("NOMBRE1"),
+                rs.getString("NOMBRE2"),
+                rs.getString("APELLIDO1"),
+                rs.getString("APELLIDO2"),
+                rs.getString("EMAIL"),
+                new RolDTO(Rol.valueOf(rs.getString("ROL"))),
+                rs.getInt("EXPERIENCIA")
+                ), idOrden);
+
+    } catch (DataAccessException e) {
+        throw new BadRequestException("Error al obtener los mecánicos de la orden: " + e.getMessage());
     }
+}
 
 
-    public void registrarDiagnosticos(String idOrden, CrearDiagnosticoDTO crearDiagnosticoDTO) {
 
+
+    @Transactional
+    public void registrarDiagnosticos(String idOrden, CrearDiagnosticoDTO dto) {
+    try {
+        String sql = """
+            INSERT INTO DIAGNOSTICO (ID, ORDEN_ID, DIAGNOSTICOINICIAL, DIAGNOSTICOFINAL)
+            VALUES (?, ?, ?, ?)
+        """;
+
+        jdbcTemplate.update(sql,
+                UUID.randomUUID().toString(),
+                idOrden,
+                dto.diagnosticoInicial(),
+                dto.diagnosticoFinal()
+        );
+
+       
+    } catch (DataAccessException e) {
+        throw new BadRequestException("Error al registrar diagnóstico: " + e.getMessage());
     }
+}
 
-
+   @Transactional(readOnly = true)
     public CrearDiagnosticoDTO obtenerDiagnostico(String idOrden) {
-        return null;
+
+    String sql = """
+        SELECT DIAGNOSTICOINICIAL, DIAGNOSTICOFINAL
+        FROM DIAGNOSTICO
+        WHERE ORDEN_ID = ?
+    """;
+
+    try {
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new CrearDiagnosticoDTO(
+                rs.getString("DIAGNOSTICOINICIAL"),
+                rs.getString("DIAGNOSTICOFINAL")
+        ), idOrden);
     }
+     catch (EmptyResultDataAccessException e) {
+        throw new ResourceNotFoundException("No se encontró diagnóstico para la orden " + idOrden);
+    }
+}
+
 
     // (agregar en la relación ternaria)
+    @Transactional
+    public void registrarServicio(String idOrden, String idMecanico, String idServicio, DetalleServicioMecanicoDTO dto) {
+    try {
+        String sql = """
+            INSERT INTO MOS (ORDEN_ID, MECANICO_ID, SERVICIO_ID, ROL, HORAS_TRABAJADAS, FECHA_ASIGNACION)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """;
 
-    public void registrarServicio(String idOrden, String idMecanico, String idServicio, DetalleServicioMecanicoDTO detalleServicioMecanicoDTO) {
+        jdbcTemplate.update(sql,
+                idOrden,
+                idMecanico,
+                idServicio,
+                dto.rol(),
+                dto.horasTrabajadas(),
+                Timestamp.valueOf(dto.fechaAsignacion())
+        );
 
+       
+    } catch (DataAccessException e) {
+        throw new BadRequestException("Error al registrar servicio: " + e.getMessage());
     }
+}
+
 
     // editar los datos de esa relación ternaria
 
-    public void actualizarDetalleServicio(String idOrden, String idMecanico, String idServicio, DetalleServicioMecanicoDTO detalleServicioMecanicoDTO) {
+   @Transactional
+    public void actualizarDetalleServicio(String idOrden, String idMecanico, String idServicio, DetalleServicioMecanicoDTO dto) {
+    try {
 
+        String sql = """
+            UPDATE MOS
+            SET ROL = ?, HORAS_TRABAJADAS = ?, FECHA_ASIGNACION = ?
+            WHERE ORDEN_ID = ? AND MECANICO_ID = ? AND SERVICIO_ID = ?
+        """;
+
+        int filas = jdbcTemplate.update(sql,
+                dto.rol(),
+                dto.horasTrabajadas(),
+                Timestamp.valueOf(dto.fechaAsignacion()),
+                idOrden,
+                idMecanico,
+                idServicio
+        );
+
+        if (filas == 0) {
+            throw new ResourceNotFoundException("No se encontró la relación ternaria para actualizar");
+        }
+
+
+    } catch (DataAccessException e) {
+        throw new BadRequestException("Error al actualizar detalle del servicio: " + e.getMessage());
     }
+}
+
 
     // devueve la lista de todos los servicios(el mecanico que los hizo, rol, horas trabajadas y fechaAsignacion)
 
+    @Transactional(readOnly = true)
     public List<DetalleOrdenDTO> obtenerDetalleOrden(String idOrden) {
-        return List.of();
+
+    String sql = """
+        SELECT 
+            m.NOMBRE1,
+            m.NOMBRE2,
+            m.APELLIDO1,
+            m.APELLIDO2,
+            s.TIPO,
+            s.COSTOUNITARIO,
+            s.DESCRIPCION,
+            mos.ROL,
+            mos.HORAS_TRABAJADAS,
+            mos.FECHA_ASIGNACION
+        FROM MOS mos
+        JOIN MECANICO m ON mos.MECANICO_ID = m.ID
+        JOIN SERVICIO s ON mos.SERVICIO_ID = s.ID
+        WHERE mos.ORDEN_ID = ?
+    """;
+
+    try {
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new DetalleOrdenDTO(
+                rs.getString("NOMBRE1"),
+                rs.getString("NOMBRE2"),
+                rs.getString("APELLIDO1"),
+                rs.getString("APELLIDO2"),
+                rs.getString("TIPO"),
+                rs.getDouble("COSTOUNITARIO"),
+                rs.getString("DESCRIPCION"),
+                rs.getString("ROL"),
+                rs.getInt("HORAS_TRABAJADAS"),
+                rs.getTimestamp("FECHA_ASIGNACION") != null
+                    ? rs.getTimestamp("FECHA_ASIGNACION").toLocalDateTime()
+                    : null
+        ), idOrden);
+
+    } catch (DataAccessException e) {
+        throw new BadRequestException("Error al obtener el detalle de la orden: " + e.getMessage());
     }
+}
 
 
+
+
+    @Transactional(readOnly = true)
     public List<ObtenerOrdenDTO> listaOrdenesPorCliente(String idCliente) {
-        return List.of();
-    }
+    String sql = """
+        SELECT 
+            o.ID,
+            o.DESCRIPCION,
+            o.FECHAINGRESO,
+            o.FECHASALIDA,
+            o.ESTADO,
+            d.DIAGNOSTICOINICIAL,
+            d.DIAGNOSTICOFINAL
+        FROM ORDEN o
+        JOIN DIAGNOSTICO d ON o.ID = d.ORDEN_ID
+        JOIN VEHICULO v ON v.ID = o.VEHICULO_ID
+        JOIN CLIENTE c ON c.ID = v.CLIENTE_ID
+        WHERE c.ID = ?
+    """;
+
+    return jdbcTemplate.query(sql, (rs, rowNum) -> new ObtenerOrdenDTO(
+            rs.getString("ID"),
+            rs.getString("DESCRIPCION"),
+            rs.getTimestamp("FECHAINGRESO") != null
+                ? rs.getTimestamp("FECHAINGRESO").toLocalDateTime()
+                : null,
+            rs.getTimestamp("FECHASALIDA") != null
+                ? rs.getTimestamp("FECHASALIDA").toLocalDateTime()
+                : null,
+            EstadoOrden.valueOf(rs.getString("ESTADO")),
+            rs.getString("DIAGNOSTICOINICIAL"),
+            rs.getString("DIAGNOSTICOFINAL")
+    ), idCliente);
+}
+
 }

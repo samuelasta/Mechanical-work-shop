@@ -1,14 +1,17 @@
 package co.uniquindio.edu.dto.orden;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public record DetalleOrdenDTO(String mecanicoId,
-                              String nombreMecanico,
-                              String idServicio,
-                              String nombreServicio,
+public record DetalleOrdenDTO(String nombre1,
+                              String nombre2,
+                              String apellido1,
+                              String apellido2,
+                              String tipo,
+                              double costoUnitario,
+                              String descripcion,                              
                               String rol,
                               int horasTrabajadas,
-                              LocalDate fechaAsignacion
+                              LocalDateTime fechaAsignacion
 
                               ) {
 }
