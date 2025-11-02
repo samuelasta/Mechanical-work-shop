@@ -158,23 +158,23 @@ public class OrdenesRepository {
 
 
    @Transactional
-    public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
+public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
     try {
         String sql = """
-            INSERT INTO MOS (ORDEN_ID, MECANICO_ID, ROL, FECHA_ASIGNACION)
+            INSERT INTO DTL_ORD_MEC (ORDEN_ID, MECANICO_ID, ROL, HORASTRABAJADAS)
             VALUES (?, ?, ?, ?)
         """;
 
         jdbcTemplate.update(sql,
                 idOrden,
                 idMecanico,
-                rolDTO.rol().name(), // guarda el enum como texto (PINTOR, SUPERVISOR, etc.)
-                Timestamp.valueOf(LocalDateTime.now())
+                rolDTO.rol().name(),  // SUPERVISOR o MECANICO
+                0 // inicia con 0 horas
         );
 
-        System.out.println("Mecánico asignado correctamente a la orden " + idOrden);
+        System.out.println("✅ Mecánico asignado correctamente a la orden " + idOrden);
     } catch (DataAccessException e) {
-        throw new BadRequestException("Error al asignar el mecanico: " + e.getMessage());
+        throw new BadRequestException("Error al asignar el mecánico: " + e.getMessage());
     }
 }
 
@@ -194,7 +194,6 @@ public class OrdenesRepository {
         throw new BadRequestException("Error al eliminar el mecqnico: " + e.getMessage());
     }
 }
-
 
 
     @Transactional(readOnly = true)
