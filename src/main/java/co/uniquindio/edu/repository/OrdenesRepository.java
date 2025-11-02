@@ -20,7 +20,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,11 +42,11 @@ public class OrdenesRepository {
         jdbcTemplate.update(sqlOrden, 
             idOrden,
             Timestamp.valueOf(crearOrdenDTO.fechaIngreso()),
-            "PENDIENTE",
+            EstadoOrden.PENDIENTE.name(),
             crearOrdenDTO.descripcion(),
             idVehiculo 
         );
-        }catch(Exception e){
+        }catch(DataAccessException e){
 
             throw new BadRequestException("no se pudo crear la orden");
 
@@ -172,7 +171,6 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
                 0 // inicia con 0 horas
         );
 
-        System.out.println("✅ Mecánico asignado correctamente a la orden " + idOrden);
     } catch (DataAccessException e) {
         throw new BadRequestException("Error al asignar el mecánico: " + e.getMessage());
     }

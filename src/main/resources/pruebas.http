@@ -1,0 +1,440 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+### ClientesController Endpoints
+
+# Crear cliente
+POST http://localhost:8080/api/clientes
+Content-Type: application/json
+
+{
+  "nombre1": "Juan",
+  "nombre2": "Carlos",
+  "apellido1": "Pérez",
+  "apellido2": "Gómez",
+  "email": "juan.perez@example.com",
+  "telefonos": [
+    {
+      "tipo": "CELULAR",
+      "numero": "3001234567"
+    }
+  ],
+  "direccion": "Calle 123",
+  "barrio": "Centro",
+  "ciudad": "Bogotá",
+  "departamento": "Cundinamarca"
+}
+
+###
+
+# Eliminar cliente
+DELETE http://localhost:8080/api/clientes/{id}
+Content-Type: application/json
+
+###
+
+# Actualizar cliente
+PUT http://localhost:8080/api/clientes/{id}
+Content-Type: application/json
+
+{
+  "nombre1": "Juan",
+  "nombre2": "Carlos",
+  "apellido1": "Pérez",
+  "apellido2": "Gómez",
+  "email": "juan.perez@example.com",
+  "telefonos": [
+    {
+      "tipo": "CELULAR",
+      "numero": "3001234567"
+    }
+  ],
+  "direccion": "Calle 123",
+  "barrio": "Centro",
+  "ciudad": "Bogotá",
+  "departamento": "Cundinamarca"
+}
+
+###
+
+# Obtener cliente
+GET http://localhost:8080/api/clientes/{id}
+
+###
+
+# Listar órdenes por cliente
+GET http://localhost:8080/api/clientes/{id}/ordenes
+
+###
+
+# Listar servicios y repuestos por vehículo del cliente
+GET http://localhost:8080/api/clientes/{idCliente}/vehiculos/{placaVehiculo}/servicios-repuestos
+
+###
+
+### OrdenesController Endpoints
+
+# Crear orden para un vehículo
+POST http://localhost:8080/api/ordenes/{idVehiculo}/vehiculo
+Content-Type: application/json
+
+{
+  "fechaIngreso": "2023-10-01T10:00:00",
+  "descripcion": "Revisión general del vehículo"
+}
+
+###
+
+# Eliminar orden
+DELETE http://localhost:8080/api/ordenes/{idOrden}
+
+###
+
+# Actualizar orden
+PUT http://localhost:8080/api/ordenes/{idOrden}
+Content-Type: application/json
+
+{
+  "descripcion": "Cambio de aceite y filtros",
+  "fechaIngreso": "2023-10-01T10:00:00",
+  "fechaSalida": "2023-10-02T15:00:00"
+}
+
+###
+
+# Obtener orden
+GET http://localhost:8080/api/ordenes/{idOrden}
+
+###
+
+# Listar todas las órdenes
+GET http://localhost:8080/api/ordenes
+
+###
+
+# Asignar mecánico a orden
+PATCH http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}
+Content-Type: application/json
+
+{
+  "rol": "MECANICO"
+}
+
+###
+
+# Eliminar mecánico de orden
+DELETE http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}
+
+###
+
+# Obtener mecánicos por orden
+GET http://localhost:8080/api/ordenes/{idOrden}/mecanicos
+
+###
+
+# Registrar diagnóstico
+POST http://localhost:8080/api/ordenes/{idOrden}/diagnosticos
+Content-Type: application/json
+
+{
+  "diagnosticoInicial": "Problema en el motor",
+  "diagnosticoFinal": "Cambio de bujías requerido"
+}
+
+###
+
+# Obtener diagnóstico
+GET http://localhost:8080/api/ordenes/{idOrden}/diagnosticos
+
+###
+
+# Registrar servicio en orden
+POST http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}/servicios/{idServicio}
+Content-Type: application/json
+
+{
+  "rol": "MECANICO",
+  "horasTrabajadas": 2,
+  "fechaAsignacion": "2023-10-01T10:00:00"
+}
+
+###
+
+# Actualizar detalle de servicio
+PUT http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}/servicios/{idServicio}
+Content-Type: application/json
+
+{
+  "rol": "SUPERVISOR",
+  "horasTrabajadas": 3,
+  "fechaAsignacion": "2023-10-01T10:00:00"
+}
+
+###
+
+# Obtener detalle de orden
+GET http://localhost:8080/api/ordenes/{idOrden}/detalle
+
+###
+
+### FacturaController Endpoints
+
+# Obtener factura por orden
+GET http://localhost:8080/api/facturas/{idOrden}/ordenes
+
+###
+
+# Obtener facturas por placa de vehículo
+GET http://localhost:8080/api/facturas/{placa}/vehiculos
+
+###
+
+# Listar todas las facturas
+GET http://localhost:8080/api/facturas
+
+###
+
+# Obtener facturas por cliente
+GET http://localhost:8080/api/facturas/{idCliente}/factura
+
+###
+
+### MecanicoController Endpoints
+
+# Crear mecánico
+POST http://localhost:8080/api/mecanicos
+Content-Type: application/json
+
+{
+  "nombre1": "Pedro",
+  "nombre2": "Antonio",
+  "apellido1": "Rodríguez",
+  "apellido2": "Martínez",
+  "email": "pedro.rodriguez@example.com",
+  "experiencia": 5,
+  "especializacion": ["MOTOR"]
+}
+
+###
+
+# Actualizar mecánico
+PUT http://localhost:8080/api/mecanicos/{id}
+Content-Type: application/json
+
+{
+  "nombre1": "Pedro",
+  "nombre2": "Antonio",
+  "apellido1": "Rodríguez",
+  "apellido2": "Martínez",
+  "email": "pedro.rodriguez@example.com",
+  "experiencia": 6,
+  "especializacion": ["MOTOR"]
+}
+
+###
+
+# Listar mecánicos
+GET http://localhost:8080/api/mecanicos
+
+###
+
+# Obtener mecánico
+GET http://localhost:8080/api/mecanicos/{id}
+
+###
+
+# Eliminar mecánico
+DELETE http://localhost:8080/api/mecanicos/{id}
+
+###
+
+# Obtener estadísticas de mecánico
+GET http://localhost:8080/api/mecanicos/{id}/estadisticas
+
+###
+
+# Listar servicios por mecánico
+GET http://localhost:8080/api/mecanicos/{id}/servicios
+
+###
+
+### ProveedorController Endpoints
+
+# Crear proveedor
+POST http://localhost:8080/api/proveedores
+Content-Type: application/json
+
+{
+  "nombre": "Proveedor ABC",
+  "email": "contacto@proveedorabc.com",
+  "telefonos": [
+    {
+      "tipo": "FIJO",
+      "numero": "6012345678"
+    }
+  ]
+}
+
+###
+
+# Actualizar proveedor
+PUT http://localhost:8080/api/proveedores/{id}
+Content-Type: application/json
+
+{
+  "nombre": "Proveedor ABC",
+  "email": "contacto@proveedorabc.com",
+  "telefonos": [
+    {
+      "tipo": "FIJO",
+      "numero": "6012345678"
+    }
+  ]
+}
+
+###
+
+# Listar proveedores
+GET http://localhost:8080/api/proveedores
+
+###
+
+# Obtener proveedor
+GET http://localhost:8080/api/proveedores/{id}
+
+###
+
+# Eliminar proveedor
+DELETE http://localhost:8080/api/proveedores/{id}
+
+###
+
+### RepuestosController Endpoints
+
+# Crear repuesto
+POST http://localhost:8080/api/repuestos
+Content-Type: application/json
+
+{
+  "nombre": "Filtro de aceite",
+  "costoUnitario": 15000.0,
+  "stock": 50
+}
+
+###
+
+# Actualizar repuesto
+PUT http://localhost:8080/api/repuestos/{id}
+Content-Type: application/json
+
+{
+  "nombre": "Filtro de aceite",
+  "costoUnitario": 16000.0,
+  "stock": 45
+}
+
+###
+
+# Listar repuestos
+GET http://localhost:8080/api/repuestos
+
+###
+
+# Obtener repuesto
+GET http://localhost:8080/api/repuestos/{id}
+
+###
+
+# Eliminar repuesto
+DELETE http://localhost:8080/api/repuestos/{id}
+
+###
+
+### ServiciosController Endpoints
+
+# Crear servicio
+POST http://localhost:8080/api/servicios
+Content-Type: application/json
+
+{
+  "tipoServicio": "CAMBIO_ACEITE",
+  "descripcion": "Cambio de aceite del motor",
+  "costoUnitario": 50000.0
+}
+
+###
+
+# Actualizar servicio
+PUT http://localhost:8080/api/servicios/{id}
+Content-Type: application/json
+
+{
+  "tipoServicio": "CAMBIO_ACEITE",
+  "descripcion": "Cambio de aceite del motor con filtro",
+  "costoUnitario": 55000.0
+}
+
+###
+
+# Listar servicios
+GET http://localhost:8080/api/servicios
+
+###
+
+# Obtener servicio
+GET http://localhost:8080/api/servicios/{id}
+
+###
+
+# Eliminar servicio
+DELETE http://localhost:8080/api/servicios/{id}
+
+###
+
+### VehiculosController Endpoints
+
+# Crear vehículo para cliente
+POST http://localhost:8080/api/vehiculos/{idCliente}/clientes
+Content-Type: application/json
+
+{
+  "placa": "ABC123",
+  "anio": "2020-01-01T00:00:00.000Z",
+  "color": "Blanco",
+  "modelo": "Corolla",
+  "marca": "Toyota"
+}
+
+###
+
+# Actualizar vehículo
+PUT http://localhost:8080/api/vehiculos/{idVehiculo}/clientes/{idCliente}
+Content-Type: application/json
+
+{
+  "placa": "ABC123",
+  "anio": "2021-01-01T00:00:00.000Z",
+  "color": "Azul",
+  "modelo": "Corolla",
+  "marca": "Toyota"
+}
+
+###
+
+# Listar vehículos
+GET http://localhost:8080/api/vehiculos
+
+###
+
+# Obtener vehículo
+GET http://localhost:8080/api/vehiculos/{id}
+
+###
+
+# Eliminar vehículo
+DELETE http://localhost:8080/api/vehiculos/{id}
+
+###
