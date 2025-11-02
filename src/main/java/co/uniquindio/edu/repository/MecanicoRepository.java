@@ -23,7 +23,7 @@ public class MecanicoRepository {
 
         //crea mecanico
         String mecanicoId = java.util.UUID.randomUUID().toString();
-        String sqlMecanico = "INSERT INTO MECANICO (ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA) VALUES(?,?,?,?,?,?,?)";
+        String sqlMecanico = "INSERT INTO MECANICO (ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA, ESTADO) VALUES(?,?,?,?,?,?,?,?)";
         jdbcTemplate.update(sqlMecanico,
                 mecanicoId,
                 crearMecanicoDTO.nombre1(),
@@ -31,7 +31,8 @@ public class MecanicoRepository {
                 crearMecanicoDTO.apellido1(),
                 crearMecanicoDTO.apellido2(),
                 crearMecanicoDTO.email(),
-                crearMecanicoDTO.experiencia()
+                crearMecanicoDTO.experiencia(),
+                crearMecanicoDTO.estado()
         );
 
 

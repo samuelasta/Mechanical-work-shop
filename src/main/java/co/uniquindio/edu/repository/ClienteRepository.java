@@ -69,7 +69,7 @@ public class ClienteRepository {
                 clienteDTO.email(),
                 Timestamp.valueOf(java.time.LocalDateTime.now()),
                 direccionId,
-                "CREADO"
+                "ACTIVO"
         );
 
 

@@ -10,6 +10,7 @@ public record CrearMecanicoDTO(String nombre1,
                                String apellido2,
                                String email,
                                int experiencia,
+                               String estado,
                                List<TipoEspecializacion> especializacion
                                // estado se crea automatico (activo, inactivo)
 ) {

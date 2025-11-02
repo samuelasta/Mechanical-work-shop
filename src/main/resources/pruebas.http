@@ -6,16 +6,16 @@ GET https://examples.http-client.intellij.net/get
 
 ### ClientesController Endpoints
 
-# Crear cliente
+# Crear cliente (listo)
 POST http://localhost:8080/api/clientes
 Content-Type: application/json
 
 {
-  "nombre1": "Juan",
-  "nombre2": "Carlos",
+  "nombre1": "ANDRES",
+  "nombre2": "HUMBERTO",
   "apellido1": "Pérez",
   "apellido2": "Gómez",
-  "email": "juan.perez@example.com",
+  "email": "andres@gmail.com",
   "telefonos": [
     {
       "tipo": "CELULAR",
@@ -24,24 +24,24 @@ Content-Type: application/json
   ],
   "direccion": "Calle 123",
   "barrio": "Centro",
-  "ciudad": "Bogotá",
-  "departamento": "Cundinamarca"
+  "ciudad": "armenia",
+  "departamento": "quindio"
 }
 
 ###
 
-# Eliminar cliente
-DELETE http://localhost:8080/api/clientes/{id}
+# Eliminar cliente (listo)
+DELETE http://localhost:8080/api/clientes/a784f589-068e-4bb8-ab4a-b84e991902df
 Content-Type: application/json
 
 ###
 
-# Actualizar cliente
-PUT http://localhost:8080/api/clientes/{id}
+# Actualizar cliente (listo)
+PUT http://localhost:8080/api/clientes/a784f589-068e-4bb8-ab4a-b84e991902df
 Content-Type: application/json
 
 {
-  "nombre1": "Juan",
+  "nombre1": "SAMUEL",
   "nombre2": "Carlos",
   "apellido1": "Pérez",
   "apellido2": "Gómez",
@@ -60,13 +60,13 @@ Content-Type: application/json
 
 ###
 
-# Obtener cliente
-GET http://localhost:8080/api/clientes/{id}
+# Obtener cliente (listo)
+GET http://localhost:8080/api/clientes/8b060c32-c3e7-46ef-b163-9143c011aece
 
 ###
 
-# Listar órdenes por cliente
-GET http://localhost:8080/api/clientes/{id}/ordenes
+# Listar órdenes por cliente (falta)
+GET http://localhost:8080/api/clientes/8b060c32-c3e7-46ef-b163-9143c011aece/ordenes
 
 ###
 
@@ -192,19 +192,19 @@ GET http://localhost:8080/api/facturas/{placa}/vehiculos
 
 ###
 
-# Listar todas las facturas
+# Listar todas las facturas (listo)
 GET http://localhost:8080/api/facturas
 
 ###
 
-# Obtener facturas por cliente
-GET http://localhost:8080/api/facturas/{idCliente}/factura
+# Obtener facturas por cliente (falta)
+GET http://localhost:8080/api/facturas/8b060c32-c3e7-46ef-b163-9143c011aece/factura
 
 ###
 
 ### MecanicoController Endpoints
 
-# Crear mecánico
+# Crear mecánico (LISTO)
 POST http://localhost:8080/api/mecanicos
 Content-Type: application/json
 
@@ -215,13 +215,14 @@ Content-Type: application/json
   "apellido2": "Martínez",
   "email": "pedro.rodriguez@example.com",
   "experiencia": 5,
-  "especializacion": ["MOTOR"]
+  "especializacion": ["LATONERIA_Y_PINTURA"],
+  "estado": "ACTIVO"
 }
 
 ###
 
-# Actualizar mecánico
-PUT http://localhost:8080/api/mecanicos/{id}
+# Actualizar mecánico (LISTO)
+PUT http://localhost:8080/api/mecanicos/b9066f8a-22bf-433b-a4ca-83995b5041ae
 Content-Type: application/json
 
 {
@@ -231,39 +232,39 @@ Content-Type: application/json
   "apellido2": "Martínez",
   "email": "pedro.rodriguez@example.com",
   "experiencia": 6,
-  "especializacion": ["MOTOR"]
+  "especializacion": ["MECANICA_GENERAL"]
 }
 
 ###
 
-# Listar mecánicos
+# Listar mecánicos (falta)
 GET http://localhost:8080/api/mecanicos
 
 ###
 
-# Obtener mecánico
-GET http://localhost:8080/api/mecanicos/{id}
+# Obtener mecánico (falta)
+GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d
 
 ###
 
-# Eliminar mecánico
-DELETE http://localhost:8080/api/mecanicos/{id}
+# Eliminar mecánico (falta)
+DELETE http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d
 
 ###
 
-# Obtener estadísticas de mecánico
-GET http://localhost:8080/api/mecanicos/{id}/estadisticas
+# Obtener estadísticas de mecánico (falta)
+GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d/estadisticas
 
 ###
 
 # Listar servicios por mecánico
-GET http://localhost:8080/api/mecanicos/{id}/servicios
+GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d/servicios
 
 ###
 
 ### ProveedorController Endpoints
 
-# Crear proveedor
+# Crear proveedor (listo)
 POST http://localhost:8080/api/proveedores
 Content-Type: application/json
 
@@ -280,12 +281,12 @@ Content-Type: application/json
 
 ###
 
-# Actualizar proveedor
-PUT http://localhost:8080/api/proveedores/{id}
+# Actualizar proveedor (listo)
+PUT http://localhost:8080/api/proveedores/e0015038-e3ef-4293-b5ee-96ac461c97cf
 Content-Type: application/json
 
 {
-  "nombre": "Proveedor ABC",
+  "nombre": "SAamuel ABC",
   "email": "contacto@proveedorabc.com",
   "telefonos": [
     {
@@ -314,20 +315,20 @@ DELETE http://localhost:8080/api/proveedores/{id}
 
 ### RepuestosController Endpoints
 
-# Crear repuesto
+# Crear repuesto (listo)
 POST http://localhost:8080/api/repuestos
 Content-Type: application/json
 
 {
-  "nombre": "Filtro de aceite",
+  "nombre": "llanta",
   "costoUnitario": 15000.0,
   "stock": 50
 }
 
 ###
 
-# Actualizar repuesto
-PUT http://localhost:8080/api/repuestos/{id}
+# Actualizar repuesto (listo)
+PUT http://localhost:8080/api/repuestos/fe5c8321-a94f-4717-8f2c-51997e594cd6
 Content-Type: application/json
 
 {
@@ -338,66 +339,66 @@ Content-Type: application/json
 
 ###
 
-# Listar repuestos
+# Listar repuestos (listo)
 GET http://localhost:8080/api/repuestos
 
 ###
 
-# Obtener repuesto
+# Obtener repuesto (listo)
 GET http://localhost:8080/api/repuestos/{id}
 
 ###
 
-# Eliminar repuesto
-DELETE http://localhost:8080/api/repuestos/{id}
+# Eliminar repuesto (listo)
+DELETE http://localhost:8080/api/repuestos/0073d76d-1177-4d7b-a217-e5929ccd798a
 
 ###
 
 ### ServiciosController Endpoints
 
-# Crear servicio
+# Crear servicio (LISTO)
 POST http://localhost:8080/api/servicios
 Content-Type: application/json
 
 {
-  "tipoServicio": "CAMBIO_ACEITE",
-  "descripcion": "Cambio de aceite del motor",
+  "tipoServicio": "MECANICA_GENERAL",
+  "descripcion": "revision general al vehiculo",
   "costoUnitario": 50000.0
 }
 
 ###
 
-# Actualizar servicio
-PUT http://localhost:8080/api/servicios/{id}
+# Actualizar servicio (listo)
+PUT http://localhost:8080/api/servicios/9e28673e-1a01-4714-95a3-d7f37af2399c
 Content-Type: application/json
 
 {
-  "tipoServicio": "CAMBIO_ACEITE",
-  "descripcion": "Cambio de aceite del motor con filtro",
-  "costoUnitario": 55000.0
+  "tipoServicio": "ALINEACION_BALANCEO",
+  "descripcion": "ALINEACION A LAS LLANTAS",
+  "costoUnitario": 100000.0
 }
 
 ###
 
-# Listar servicios
+# Listar servicios (listo)
 GET http://localhost:8080/api/servicios
 
 ###
 
-# Obtener servicio
-GET http://localhost:8080/api/servicios/{id}
+# Obtener servicio (listo)
+GET http://localhost:8080/api/servicios/9e28673e-1a01-4714-95a3-d7f37af2399c
 
 ###
 
-# Eliminar servicio
-DELETE http://localhost:8080/api/servicios/{id}
+# Eliminar servicio (LISTO)
+DELETE http://localhost:8080/api/servicios/a62603e1-abdb-49e5-8e2d-e4a89ed66ebc
 
 ###
 
 ### VehiculosController Endpoints
 
-# Crear vehículo para cliente
-POST http://localhost:8080/api/vehiculos/{idCliente}/clientes
+# Crear vehículo para cliente (listo)
+POST http://localhost:8080/api/vehiculos/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d/clientes
 Content-Type: application/json
 
 {
@@ -410,8 +411,8 @@ Content-Type: application/json
 
 ###
 
-# Actualizar vehículo
-PUT http://localhost:8080/api/vehiculos/{idVehiculo}/clientes/{idCliente}
+# Actualizar vehículo (listo)
+PUT http://localhost:8080/api/vehiculos/71589e0d-ab2c-46af-b527-9a5c7d490899/clientes/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d
 Content-Type: application/json
 
 {
@@ -424,17 +425,17 @@ Content-Type: application/json
 
 ###
 
-# Listar vehículos
+# Listar vehículos (listo)
 GET http://localhost:8080/api/vehiculos
 
 ###
 
-# Obtener vehículo
-GET http://localhost:8080/api/vehiculos/{id}
+# Obtener vehículo (listo)
+GET http://localhost:8080/api/vehiculos/71589e0d-ab2c-46af-b527-9a5c7d490899
 
 ###
 
-# Eliminar vehículo
-DELETE http://localhost:8080/api/vehiculos/{id}
+# Eliminar vehículo (listo)
+DELETE http://localhost:8080/api/vehiculos/71589e0d-ab2c-46af-b527-9a5c7d490899
 
 ###
