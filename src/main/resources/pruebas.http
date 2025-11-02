@@ -110,7 +110,7 @@ GET http://localhost:8080/api/ordenes/7f1224ee-4db3-48de-824f-51665333e70e
 
 ###
 
-# Listar todas las órdenes
+# Listar todas las órdenes (listo)
 GET http://localhost:8080/api/ordenes
 
 ###
