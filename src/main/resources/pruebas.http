@@ -298,18 +298,18 @@ Content-Type: application/json
 
 ###
 
-# Listar proveedores
+# Listar proveedores (listo)
 GET http://localhost:8080/api/proveedores
 
 ###
 
-# Obtener proveedor
-GET http://localhost:8080/api/proveedores/{id}
+# Obtener proveedor (LISTO)
+GET http://localhost:8080/api/proveedores/494aeea5-eeba-4ef2-9139-8bb0114bfd8d
 
 ###
 
-# Eliminar proveedor
-DELETE http://localhost:8080/api/proveedores/{id}
+# Eliminar proveedor (listo)
+DELETE http://localhost:8080/api/proveedores/494aeea5-eeba-4ef2-9139-8bb0114bfd8d
 
 ###
 
