@@ -93,7 +93,7 @@ public class OrdenesRepository {
             d.DIAGNOSTICOINICIAL,
             d.DIAGNOSTICOFINAL
         FROM ORDEN o
-        JOIN DIAGNOSTICO d ON d.ORDEN_ID = o.ID
+        LEFT JOIN DIAGNOSTICO d ON d.ORDEN_ID = o.ID
         WHERE o.ID = ?
     """;
 
@@ -131,7 +131,7 @@ public class OrdenesRepository {
             d.DIAGNOSTICOINICIAL,
             d.DIAGNOSTICOFINAL
         FROM ORDEN o
-        JOIN DIAGNOSTICO d ON d.ORDEN_ID = o.ID
+        LEFT JOIN DIAGNOSTICO d ON d.ORDEN_ID = o.ID
         ORDER BY o.FECHAINGRESO DESC
     """;
 
@@ -206,10 +206,10 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
             m.APELLIDO2,
             m.EMAIL,
             m.EXPERIENCIA,
-            mos.ROL
-        FROM MOS mos
-        JOIN MECANICO m ON mos.MECANICO_ID = m.ID
-        WHERE mos.ORDEN_ID = ?
+            dom.ROL
+        FROM DTL_ORD_MEC dom
+        JOIN MECANICO m ON dom.MECANICO_ID = m.ID
+        WHERE dom.ORDEN_ID = ?
     """;
 
     try {

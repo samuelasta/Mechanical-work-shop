@@ -118,7 +118,7 @@ public class ProveedorRepository {
         String sqlTel = """
             SELECT TIPO, NUMERO
             FROM TELEFONO
-            WHERE PROVEEDORES_ID = ? AND ESTADO <> 'INACTIVO'
+            WHERE PROVEEDORES_ID = ? 
             ORDER BY ID
         """;
         List<CrearTelefonoDTO> telefonos = jdbcTemplate.query(
@@ -137,7 +137,7 @@ public class ProveedorRepository {
     public void eliminarProveedor(String id) {
         // Soft delete: marcar proveedor y sus teléfonos como INACTIVO
         jdbcTemplate.update(
-                "UPDATE TELEFONO SET ESTADO = 'INACTIVO' WHERE PROVEEDORES_ID = ?",
+                "DELETE FROM TELEFONO WHERE PROVEEDORES_ID = ?",
                 id
         );
         int rows = jdbcTemplate.update(

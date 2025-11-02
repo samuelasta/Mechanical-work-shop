@@ -28,7 +28,7 @@ public class MecanicoServiceImpl implements MecanicosService {
 
     @Override
     public List<ObtenerMecanicoDTO> listaMecanicos() {
-        return List.of();
+        return mecanicoRepository.listarMecanicos();
     }
 
     @Override

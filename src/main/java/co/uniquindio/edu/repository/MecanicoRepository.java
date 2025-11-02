@@ -2,6 +2,7 @@ package co.uniquindio.edu.repository;
 
 import co.uniquindio.edu.dto.mecanico.CrearMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
+import co.uniquindio.edu.exception.BadRequestException;
 import co.uniquindio.edu.exception.ResourceNotFoundException;
 import co.uniquindio.edu.model.enums.TipoEspecializacion;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @Repository
 public class MecanicoRepository {
@@ -74,43 +79,43 @@ public class MecanicoRepository {
     @Transactional
     public void eliminarMecanico(String id){
         //elimina mecanico
-      Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM  MECANICO WHERE MECANICO_ID=?", Integer.class, id);
+      Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM  MECANICO WHERE ID=?", Integer.class, id);
 
-      if(count == 0 || count == null){
+      if(count == null || count == 0){
           throw new ResourceNotFoundException("no existe este mecanico");
       }
 
-      jdbcTemplate.update("UPDATE MECANICO SET ESTADO=? WHERE MECANICO_ID=?", "INACTIVO",id);
+      jdbcTemplate.update("UPDATE MECANICO SET ESTADO=? WHERE ID=?", "INACTIVO",id);
 
     }
 
     @Transactional(readOnly = true)
     public ObtenerMecanicoDTO obtenerMecanico(String id) {
-
         try {
-            // Obtener los datos del mecánico
+            // Consulta principal del mecánico
             String sqlMecanico = """
             SELECT ID, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, EXPERIENCIA, EMAIL
             FROM MECANICO
             WHERE ID = ? AND ESTADO <> 'INACTIVO'
         """;
 
-            // Mapear directamente a un record parcial (sin la lista todavía)
-            var mecanicoBase = jdbcTemplate.queryForObject(
+            // Mapea directamente al DTO base
+            ObtenerMecanicoDTO mecanico = jdbcTemplate.queryForObject(
                     sqlMecanico,
-                    (rs, rowNum) -> new Object[]{
+                    (rs, rowNum) -> new ObtenerMecanicoDTO(
                             rs.getString("ID"),
                             rs.getString("NOMBRE1"),
                             rs.getString("NOMBRE2"),
                             rs.getString("APELLIDO1"),
                             rs.getString("APELLIDO2"),
-                            rs.getString("EXPERIENCIA"),
                             rs.getString("EMAIL"),
-                    },
+                            rs.getInt("EXPERIENCIA"),
+                            new ArrayList<>() // se llena más abajo
+                    ),
                     id
             );
 
-            // Obtener las especializaciones del mecánico
+            // Consulta las especializaciones del mecánico
             String sqlEspecializaciones = """
             SELECT NOMBRE
             FROM ESPECIALIZACION
@@ -123,38 +128,80 @@ public class MecanicoRepository {
                     id
             );
 
-            // Construir el record con todos los datos
+            // Asigna las especializaciones al DTO (crea una copia con la lista actualizada)
             return new ObtenerMecanicoDTO(
-                    (String) mecanicoBase[0],
-                    (String) mecanicoBase[1],
-                    (String) mecanicoBase[2],
-                    (String) mecanicoBase[3],
-                    (String) mecanicoBase[4],
-                    (String) mecanicoBase[5],
-                    (int) mecanicoBase[6],
+                    mecanico.id(),
+                    mecanico.nombre1(),
+                    mecanico.nombre2(),
+                    mecanico.apellido1(),
+                    mecanico.apellido2(),
+                    mecanico.email(),
+                    mecanico.experiencia(),
                     especializaciones
             );
 
         } catch (Exception e) {
-            throw new ResourceNotFoundException("No se encontró el mecánico con ID: " + id);
+            throw new BadRequestException("Error al consultar el mecánico: " + e.getMessage());
         }
     }
 
-   /** public List<ObtenerMecanicoDTO> listaMecanicos() {
-        //lista mecanicos
-        String sql = "SELECT NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA,ESPECIALIZACION FROM MECANICO";
-        return jdbcTemplate.query(sql,
-                (rs, rowNum) -> new ObtenerMecanicoDTO(
-                        rs.getString("ID"),
-                        rs.getString("NOMBRE1"),
-                        rs.getString("NOMBRE2"),
-                        rs.getString("APELLIDO1"),
-                        rs.getString("APELLIDO2"),
-                        rs.getString("EMAIL"),
-                        rs.getInt("EXPERIENCIA"),
-                        rs.getString("ESPECIALIZACION")
-                )
-        );
-    }*/
+
+    @Transactional(readOnly = true)
+    public List<ObtenerMecanicoDTO> listarMecanicos() {
+
+        String sql = """
+        SELECT ID, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, EXPERIENCIA, EMAIL
+        FROM MECANICO
+        WHERE ESTADO <> 'INACTIVO'
+        ORDER BY APELLIDO1, NOMBRE1
+    """;
+
+        // Consulta base
+        List<ObtenerMecanicoDTO> mecanicos = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            // Por cada fila, construye el DTO base (sin especializaciones aún)
+            return new ObtenerMecanicoDTO(
+                    rs.getString("ID"),
+                    rs.getString("NOMBRE1"),
+                    rs.getString("NOMBRE2"),
+                    rs.getString("APELLIDO1"),
+                    rs.getString("APELLIDO2"),
+                    rs.getString("EMAIL"),
+                    rs.getInt("EXPERIENCIA"),
+                    new ArrayList<>() // luego se llena con especializaciones
+            );
+        });
+
+        // Obtener especializaciones de todos los mecánicos (opcional)
+        String sqlEsp = """
+        SELECT MECANICO_ID, NOMBRE
+        FROM ESPECIALIZACION
+    """;
+
+        Map<String, List<TipoEspecializacion>> mapaEspecializaciones = new HashMap<>();
+
+        jdbcTemplate.query(sqlEsp, (rs) -> {
+            String mecId = rs.getString("MECANICO_ID");
+            String nombre = rs.getString("NOMBRE").toUpperCase();
+
+            mapaEspecializaciones
+                    .computeIfAbsent(mecId, k -> new ArrayList<>())
+                    .add(TipoEspecializacion.valueOf(nombre));
+        });
+
+        // Asigna las especializaciones correspondientes
+        return mecanicos.stream()
+                .map(m -> new ObtenerMecanicoDTO(
+                        m.id(),
+                        m.nombre1(),
+                        m.nombre2(),
+                        m.apellido1(),
+                        m.apellido2(),
+                        m.email(),
+                        m.experiencia(),
+                        mapaEspecializaciones.getOrDefault(m.id(), List.of())
+                ))
+                .toList();
+    }
+
 
 }
