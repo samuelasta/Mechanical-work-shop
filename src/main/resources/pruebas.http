@@ -77,8 +77,8 @@ GET http://localhost:8080/api/clientes/{idCliente}/vehiculos/{placaVehiculo}/ser
 
 ### OrdenesController Endpoints
 
-# Crear orden para un vehículo (listo)
-POST http://localhost:8080/api/ordenes/71589e0d-ab2c-46af-b527-9a5c7d490899/vehiculo
+# Crear orden para un vehículo
+POST http://localhost:8080/api/ordenes/{idVehiculo}/vehiculo
 Content-Type: application/json
 
 {
@@ -93,8 +93,8 @@ DELETE http://localhost:8080/api/ordenes/{idOrden}
 
 ###
 
-# Actualizar orden (LISTO)
-PUT http://localhost:8080/api/ordenes/7f1224ee-4db3-48de-824f-51665333e70e
+# Actualizar orden
+PUT http://localhost:8080/api/ordenes/{idOrden}
 Content-Type: application/json
 
 {
@@ -105,18 +105,18 @@ Content-Type: application/json
 
 ###
 
-# Obtener orden (listo)
-GET http://localhost:8080/api/ordenes/7f1224ee-4db3-48de-824f-51665333e70e
+# Obtener orden
+GET http://localhost:8080/api/ordenes/{idOrden}
 
 ###
 
-# Listar todas las órdenes (listo)
+# Listar todas las órdenes
 GET http://localhost:8080/api/ordenes
 
 ###
 
-# Asignar mecánico a orden (LISTO)
-PATCH http://localhost:8080/api/ordenes/7f1224ee-4db3-48de-824f-51665333e70e/mecanicos/6e393ee2-42b7-4c2e-b35c-8f5efdc1fa86
+# Asignar mecánico a orden
+PATCH http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}
 Content-Type: application/json
 
 {
@@ -125,13 +125,13 @@ Content-Type: application/json
 
 ###
 
-# Eliminar mecánico de orden servicio (a medias)
-DELETE http://localhost:8080/api/ordenes/7f1224ee-4db3-48de-824f-51665333e70e/mecanicos/6e393ee2-42b7-4c2e-b35c-8f5efdc1fa86
+# Eliminar mecánico de orden
+DELETE http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}
 
 ###
 
 # Obtener mecánicos por orden
-GET http://localhost:8080/api/ordenes/7f1224ee-4db3-48de-824f-51665333e70e/mecanicos
+GET http://localhost:8080/api/ordenes/{idOrden}/mecanicos
 
 ###
 
@@ -237,17 +237,17 @@ Content-Type: application/json
 
 ###
 
-# Listar mecánicos (listo)
+# Listar mecánicos (falta)
 GET http://localhost:8080/api/mecanicos
 
 ###
 
-# Obtener mecánico (listo)
+# Obtener mecánico (falta)
 GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d
 
 ###
 
-# Eliminar mecánico (listo)
+# Eliminar mecánico (falta)
 DELETE http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d
 
 ###
@@ -257,7 +257,7 @@ GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d/est
 
 ###
 
-# Listar servicios por mecánico (falta)
+# Listar servicios por mecánico
 GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d/servicios
 
 ###
@@ -298,18 +298,18 @@ Content-Type: application/json
 
 ###
 
-# Listar proveedores (listo)
+# Listar proveedores
 GET http://localhost:8080/api/proveedores
 
 ###
 
-# Obtener proveedor (LISTO)
-GET http://localhost:8080/api/proveedores/a307b885-dd18-4d0d-92f0-3aa9947a8d9c
+# Obtener proveedor
+GET http://localhost:8080/api/proveedores/{id}
 
 ###
 
-# Eliminar proveedor (listo)
-DELETE http://localhost:8080/api/proveedores/a307b885-dd18-4d0d-92f0-3aa9947a8d9c
+# Eliminar proveedor
+DELETE http://localhost:8080/api/proveedores/{id}
 
 ###
 

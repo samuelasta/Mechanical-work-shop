@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -39,7 +39,7 @@ public class ClientesController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO<String>> actualizarCliente(@PathVariable String id, @RequestBody CrearClienteDTO crearClienteDTO){
         clienteService.actualizarCliente(id, crearClienteDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body( new ResponseDTO<>(false, "Cliente actualizado"));
+        return ResponseEntity.status(HttpStatus.CREATED).body( new ResponseDTO<>(false, "Cliente Creado"));
     }
 
     @GetMapping("/{id}")

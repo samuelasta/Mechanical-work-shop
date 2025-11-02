@@ -20,6 +20,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,11 +43,11 @@ public class OrdenesRepository {
         jdbcTemplate.update(sqlOrden, 
             idOrden,
             Timestamp.valueOf(crearOrdenDTO.fechaIngreso()),
-            EstadoOrden.PENDIENTE.name(),
+            "PENDIENTE",
             crearOrdenDTO.descripcion(),
             idVehiculo 
         );
-        }catch(DataAccessException e){
+        }catch(Exception e){
 
             throw new BadRequestException("no se pudo crear la orden");
 

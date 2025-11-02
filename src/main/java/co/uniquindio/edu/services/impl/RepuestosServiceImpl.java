@@ -2,7 +2,6 @@ package co.uniquindio.edu.services.impl;
 
 import co.uniquindio.edu.dto.repuesto.CrearRepuestoDTO;
 import co.uniquindio.edu.dto.repuesto.ObtenerRepuestoDTO;
-import co.uniquindio.edu.repository.RepuestosRepository;
 import co.uniquindio.edu.services.RepuestosService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,30 +12,30 @@ import java.util.List;
 @Service
 public class RepuestosServiceImpl implements RepuestosService {
 
-    private final RepuestosRepository repuestosRepository;
+    private final RepuestosService repuestosService;
 
     @Override
     public void crearRepuesto(CrearRepuestoDTO crearRepuestoDTO) {
-        repuestosRepository.crearRepuesto(crearRepuestoDTO);
+        repuestosService.crearRepuesto(crearRepuestoDTO);
     }
 
     @Override
     public void actualizarRepuesto(String id, CrearRepuestoDTO crearRepuestoDTO) {
-        repuestosRepository.actualizarRepuesto(id, crearRepuestoDTO);
+        repuestosService.actualizarRepuesto(id, crearRepuestoDTO);
     }
 
     @Override
     public List<ObtenerRepuestoDTO> listaRepuestos() {
-        return repuestosRepository.listaRepuestos();
+        return repuestosService.listaRepuestos();
     }
 
     @Override
     public ObtenerRepuestoDTO obtenerRepuesto(String id) {
-        return repuestosRepository.obtenerRepuesto(id);
+        return repuestosService.obtenerRepuesto(id);
     }
 
     @Override
     public void eliminarRepuesto(String id) {
-        repuestosRepository.eliminarRepuesto(id);
+        repuestosService.eliminarRepuesto(id);
     }
 }
