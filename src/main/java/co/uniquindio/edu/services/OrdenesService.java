@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface OrdenesService {
 
-    void crearOrden(CrearOrdenDTO crearOrdenDTO);
+    void crearOrden(String idVehiculo, CrearOrdenDTO crearOrdenDTO);
     void eliminarOrden(String idOrden);
     void actualizarOrden(String idOrden, ActualizarOrdenDTO actualizarOrdenDTO);
     ObtenerOrdenDTO obtenerOrden(String idOrden);

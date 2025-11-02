@@ -5,7 +5,6 @@ import co.uniquindio.edu.dto.proveedor.CrearProveedorDTO;
 import co.uniquindio.edu.dto.proveedor.ObtenerProveedorDTO;
 import co.uniquindio.edu.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

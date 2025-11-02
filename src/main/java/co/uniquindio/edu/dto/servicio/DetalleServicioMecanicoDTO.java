@@ -1,9 +1,9 @@
 package co.uniquindio.edu.dto.servicio;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record DetalleServicioMecanicoDTO(String rol,
                                          int horasTrabajadas,
-                                         LocalDate fechaAsignacion
+                                         LocalDateTime fechaAsignacion
                                          ) {
 }

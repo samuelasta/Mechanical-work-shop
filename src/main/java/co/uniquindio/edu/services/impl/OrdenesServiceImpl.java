@@ -19,7 +19,9 @@ import java.util.List;
 public class OrdenesServiceImpl implements OrdenesService {
 
     @Override
-    public void crearOrden(CrearOrdenDTO crearOrdenDTO) {
+    public void crearOrden(String idVehiculo, CrearOrdenDTO crearOrdenDTO) {
+
+
 
     }
 

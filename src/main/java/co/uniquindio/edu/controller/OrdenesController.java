@@ -24,9 +24,9 @@ public class OrdenesController {
 
     private final OrdenesService ordenesService;
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO<String>> crearOrden(@RequestBody CrearOrdenDTO crearOrdenDTO) {
-        ordenesService.crearOrden(crearOrdenDTO);
+    @PostMapping("/{idVehiculo}/vehiculo")
+    public ResponseEntity<ResponseDTO<String>> crearOrden(@PathVariable String idVehiculo, @RequestBody CrearOrdenDTO crearOrdenDTO) {
+        ordenesService.crearOrden(idVehiculo, crearOrdenDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(false, "orden creada exitosamente"));
     }
 
