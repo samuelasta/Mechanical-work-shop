@@ -82,8 +82,8 @@ POST http://localhost:8080/api/ordenes/f7dda9b4-a8de-487b-a1dd-f429393e6227/vehi
 Content-Type: application/json
 
 {
-  "fechaIngreso": "2023-10-01T10:00:00",
-  "descripcion": "Revisión general del vehículo"
+  "fechaIngreso": "2025-10-01T10:00:00",
+  "descripcion": "El vehiculo llegó por ruidos extraños en el motor"
 }
 
 ###
@@ -438,3 +438,10 @@ GET http://localhost:8080/api/vehiculos/d4941010-2051-4ccd-9bcc-3f1b186a0032
 DELETE http://localhost:8080/api/vehiculos/d4941010-2051-4ccd-9bcc-3f1b186a0032
 
 ###
+
+# Reportes 1 (lista de todas las ordenes)
+GET http://localhost:8080/api/reportes/ordenes/pdf
+
+###
+
+GET http://localhost:8080/api/reportes/mecanicos/b5d14bf4-29c9-47df-9295-b53502d67698/ordenes/pdf
