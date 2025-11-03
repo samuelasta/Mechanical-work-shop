@@ -1,6 +1,8 @@
 package co.uniquindio.edu.util;
 
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
+import co.uniquindio.edu.dto.servicio.ObtenerServicioDTO;
+import co.uniquindio.edu.exception.BadRequestException;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.*;
@@ -60,7 +62,7 @@ public class PdfGeneratorUtil {
             return out.toByteArray();
 
         } catch (Exception e) {
-            throw new RuntimeException("Error generando PDF de órdenes", e);
+            throw new BadRequestException("Error generando PDF de órdenes");
         }
     }
 
@@ -117,8 +119,61 @@ public class PdfGeneratorUtil {
              return out.toByteArray();
 
          } catch (Exception e) {
-             throw new RuntimeException("Error generando PDF de órdenes", e);
+             throw new BadRequestException("Error generando PDF de órdenes");
          }
 
      }
+
+    public static byte[] generarPDFListaServicios(List<ObtenerServicioDTO> servicios) {
+
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+
+            Document document = new Document(PageSize.A4.rotate());
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            // TITULO
+
+            Font titleFont = new Font(Font.HELVETICA, 18, Font.BOLD, new Color(33, 66, 99));
+            Paragraph title = new Paragraph("Listado de servicios disponibles", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(20);
+            document.add(title);
+
+            // TABLA
+
+            PdfPTable table = new PdfPTable(4);
+            table.setWidthPercentage(100);
+            table.setWidths(new float[]{2.5f,3,4,3 });
+
+            // ENCABEZADOS
+
+            Stream.of("ID", "Servicio", "Descripción", "Costo")
+                    .forEach(header -> {
+                        PdfPCell cell = new PdfPCell(new Phrase(header, new Font(Font.HELVETICA, 12, Font.BOLD)));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(new Color(230, 230, 250));
+                        cell.setPadding(6);
+                        table.addCell(cell);
+                    });
+
+
+            // LOS DATOS QUE VAN DEBAJO DE CADA ENCABEZADO
+
+            for (ObtenerServicioDTO servicio : servicios) {
+                table.addCell(new Phrase(servicio.id()));
+                table.addCell(new Phrase(servicio.tipoServicio().name()));
+                table.addCell(new Phrase(servicio.descripcion()));
+                table.addCell(new Phrase(servicio.costoUnitario()+""));
+
+            }
+
+            document.add(table);
+            document.close();
+            return out.toByteArray();
+
+        } catch (Exception e) {
+            throw new BadRequestException("Error generando PDF de órdenes");
+        }
+    }
 }

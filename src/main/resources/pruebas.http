@@ -361,9 +361,9 @@ POST http://localhost:8080/api/servicios
 Content-Type: application/json
 
 {
-  "tipoServicio": "MECANICA_GENERAL",
-  "descripcion": "revision general al vehiculo",
-  "costoUnitario": 50000.0
+  "tipoServicio": "PINTURA",
+  "descripcion": "Se pinta todo el vehiculo del color que el cliente desee",
+  "costoUnitario": 100000.0
 }
 
 ###
@@ -437,11 +437,17 @@ GET http://localhost:8080/api/vehiculos/d4941010-2051-4ccd-9bcc-3f1b186a0032
 # Eliminar vehículo (listo)
 DELETE http://localhost:8080/api/vehiculos/d4941010-2051-4ccd-9bcc-3f1b186a0032
 
-###
+### REPORTES
 
-# Reportes 1 (lista de todas las ordenes)
+# Reporte 1 simple (lista de todas las ordenes)
 GET http://localhost:8080/api/reportes/ordenes/pdf
 
 ###
 
+// Reporte 2 simple (lista de todos los mecanicos implicitos en una orden)
 GET http://localhost:8080/api/reportes/mecanicos/b5d14bf4-29c9-47df-9295-b53502d67698/ordenes/pdf
+
+###
+
+// Reporte 3 simple (lista de todos los servicios disponibles del taller)
+GET http://localhost:8080/api/reportes/servicios/pdf
