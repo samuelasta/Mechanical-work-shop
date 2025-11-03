@@ -27,7 +27,7 @@ public class VehiculosController {
     @PutMapping("/{idVehiculo}/clientes/{idCliente}")
     public ResponseEntity<ResponseDTO<String>> actualizarVehiculo(@PathVariable String idVehiculo, @PathVariable String idCliente, @RequestBody CrearVehiculoDTO crearVehiculoDTO) {
         vehiculosService.actualizarVehiculo(idVehiculo, idCliente, crearVehiculoDTO);
-        return  ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  "repuesto actualizado exitosamente" ));
+        return  ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  "Vehiculo actualizado exitosamente" ));
     }
 
     // lista de todos los vehiculos

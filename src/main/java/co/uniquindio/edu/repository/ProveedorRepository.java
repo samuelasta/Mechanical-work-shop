@@ -31,15 +31,15 @@ public class ProveedorRepository {
 
         // 2) Teléfonos del proveedor (usa PROVEEDORES_ID)
         if (crearProveedorDTO.telefonos() != null) {
-            String sqlTel = "INSERT INTO TELEFONO (ID, TIPO, NUMERO, PROVEEDORES_ID, ESTADO) VALUES (?,?,?,?,?)";
+            String sqlTel = "INSERT INTO TELEFONO (ID, TIPO, NUMERO, PROVEEDORES_ID) VALUES (?,?,?,?)";
             for (CrearTelefonoDTO t : crearProveedorDTO.telefonos()) {
                 jdbcTemplate.update(
                         sqlTel,
                         java.util.UUID.randomUUID().toString(),
                         t.tipo(),
                         t.numero(),
-                        proveedorId,
-                        "ACTIVO"
+                        proveedorId
+
                 );
             }
         }
@@ -59,20 +59,19 @@ public class ProveedorRepository {
         if (dto.telefonos() != null && !dto.telefonos().isEmpty()) {
             // Soft delete de todos los teléfonos actuales del proveedor
             jdbcTemplate.update(
-                    "UPDATE TELEFONO SET ESTADO = 'INACTIVO' WHERE PROVEEDORES_ID = ?",
+                    "DELETE FROM TELEFONO  WHERE PROVEEDORES_ID = ?",
                     id
             );
 
-            // Insertar los nuevos teléfonos como ACTIVO
-            String sqlInsertTel = "INSERT INTO TELEFONO (ID, TIPO, NUMERO, PROVEEDORES_ID, ESTADO) VALUES (?,?,?,?,?)";
+            // Insertar los nuevos teléfonos
+            String sqlInsertTel = "INSERT INTO TELEFONO (ID, TIPO, NUMERO, PROVEEDORES_ID) VALUES (?,?,?,?)";
             for (CrearTelefonoDTO t : dto.telefonos()) {
                 jdbcTemplate.update(
                         sqlInsertTel,
                         java.util.UUID.randomUUID().toString(), // UUID completo
                         t.tipo(),
                         t.numero(),
-                        id,
-                        "ACTIVO"
+                        id
                 );
             }
         }

@@ -282,7 +282,7 @@ Content-Type: application/json
 ###
 
 # Actualizar proveedor (listo)
-PUT http://localhost:8080/api/proveedores/e0015038-e3ef-4293-b5ee-96ac461c97cf
+PUT http://localhost:8080/api/proveedores/02147681-9ee1-44f1-8b70-e9f960624fe1
 Content-Type: application/json
 
 {
@@ -304,12 +304,12 @@ GET http://localhost:8080/api/proveedores
 ###
 
 # Obtener proveedor (LISTO)
-GET http://localhost:8080/api/proveedores/494aeea5-eeba-4ef2-9139-8bb0114bfd8d
+GET http://localhost:8080/api/proveedores/02147681-9ee1-44f1-8b70-e9f960624fe1
 
 ###
 
 # Eliminar proveedor (listo)
-DELETE http://localhost:8080/api/proveedores/494aeea5-eeba-4ef2-9139-8bb0114bfd8d
+DELETE http://localhost:8080/api/proveedores/02147681-9ee1-44f1-8b70-e9f960624fe1
 
 ###
 
@@ -328,7 +328,7 @@ Content-Type: application/json
 ###
 
 # Actualizar repuesto (listo)
-PUT http://localhost:8080/api/repuestos/fe5c8321-a94f-4717-8f2c-51997e594cd6
+PUT http://localhost:8080/api/repuestos/ec235b5b-7bff-4e0f-b010-21bf6204cd99
 Content-Type: application/json
 
 {
@@ -345,12 +345,12 @@ GET http://localhost:8080/api/repuestos
 ###
 
 # Obtener repuesto (listo)
-GET http://localhost:8080/api/repuestos/{id}
+GET http://localhost:8080/api/repuestos/ec235b5b-7bff-4e0f-b010-21bf6204cd99
 
 ###
 
 # Eliminar repuesto (listo)
-DELETE http://localhost:8080/api/repuestos/0073d76d-1177-4d7b-a217-e5929ccd798a
+DELETE http://localhost:8080/api/repuestos/ec235b5b-7bff-4e0f-b010-21bf6204cd99
 
 ###
 
@@ -369,11 +369,11 @@ Content-Type: application/json
 ###
 
 # Actualizar servicio (listo)
-PUT http://localhost:8080/api/servicios/9e28673e-1a01-4714-95a3-d7f37af2399c
+PUT http://localhost:8080/api/servicios/35044ad5-57e8-4c31-9e2e-4dc747233002
 Content-Type: application/json
 
 {
-  "tipoServicio": "ALINEACION_BALANCEO",
+  "tipoServicio": "ALINEACION_Y_BALANCEO",
   "descripcion": "ALINEACION A LAS LLANTAS",
   "costoUnitario": 100000.0
 }
@@ -386,12 +386,12 @@ GET http://localhost:8080/api/servicios
 ###
 
 # Obtener servicio (listo)
-GET http://localhost:8080/api/servicios/9e28673e-1a01-4714-95a3-d7f37af2399c
+GET http://localhost:8080/api/servicios/06c720c2-dfc3-4655-8306-d32225327d9b
 
 ###
 
 # Eliminar servicio (LISTO)
-DELETE http://localhost:8080/api/servicios/a62603e1-abdb-49e5-8e2d-e4a89ed66ebc
+DELETE http://localhost:8080/api/servicios/06c720c2-dfc3-4655-8306-d32225327d9b
 
 ###
 
@@ -412,7 +412,7 @@ Content-Type: application/json
 ###
 
 # Actualizar vehículo (listo)
-PUT http://localhost:8080/api/vehiculos/71589e0d-ab2c-46af-b527-9a5c7d490899/clientes/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d
+PUT http://localhost:8080/api/vehiculos/d4941010-2051-4ccd-9bcc-3f1b186a0032/clientes/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d
 Content-Type: application/json
 
 {
@@ -431,11 +431,10 @@ GET http://localhost:8080/api/vehiculos
 ###
 
 # Obtener vehículo (listo)
-GET http://localhost:8080/api/vehiculos/71589e0d-ab2c-46af-b527-9a5c7d490899
-
+GET http://localhost:8080/api/vehiculos/d4941010-2051-4ccd-9bcc-3f1b186a0032
 ###
 
 # Eliminar vehículo (listo)
-DELETE http://localhost:8080/api/vehiculos/71589e0d-ab2c-46af-b527-9a5c7d490899
+DELETE http://localhost:8080/api/vehiculos/d4941010-2051-4ccd-9bcc-3f1b186a0032
 
 ###

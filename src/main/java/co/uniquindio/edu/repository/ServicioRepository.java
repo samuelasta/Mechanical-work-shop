@@ -80,6 +80,7 @@ public class ServicioRepository {
         String sql = """
             SELECT ID, DESCRIPCION, TIPO, COSTOUNITARIO
               FROM SERVICIO
+              WHERE ESTADO <> 'INACTIVO'
              ORDER BY FECHA DESC
         """;
 
@@ -131,7 +132,7 @@ public class ServicioRepository {
             throw new ResourceNotFoundException("No se encontró servicio con ID: " + id);
         }
 
-        jdbcTemplate.update("DELETE FROM SERVICIO WHERE ID = ?", id);
+        jdbcTemplate.update("UPDATE SERVICIO SET ESTADO =?  WHERE ID = ?", "INACTIVO", id);
     }
 
 
