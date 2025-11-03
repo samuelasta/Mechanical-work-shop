@@ -222,7 +222,7 @@ Content-Type: application/json
 ###
 
 # Actualizar mecánico (LISTO)
-PUT http://localhost:8080/api/mecanicos/b9066f8a-22bf-433b-a4ca-83995b5041ae
+PUT http://localhost:8080/api/mecanicos/6e393ee2-42b7-4c2e-b35c-8f5efdc1fa86
 Content-Type: application/json
 
 {
@@ -237,18 +237,18 @@ Content-Type: application/json
 
 ###
 
-# Listar mecánicos (falta)
+# Listar mecánicos (listo)
 GET http://localhost:8080/api/mecanicos
 
 ###
 
-# Obtener mecánico (falta)
-GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d
+# Obtener mecánico (listo)
+GET http://localhost:8080/api/mecanicos/6e393ee2-42b7-4c2e-b35c-8f5efdc1fa86
 
 ###
 
-# Eliminar mecánico (falta)
-DELETE http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d
+# Eliminar mecánico (listo)
+DELETE http://localhost:8080/api/mecanicos/6e393ee2-42b7-4c2e-b35c-8f5efdc1fa86
 
 ###
 
@@ -257,7 +257,7 @@ GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d/est
 
 ###
 
-# Listar servicios por mecánico
+# Listar servicios por mecánico (falta)
 GET http://localhost:8080/api/mecanicos/675c3dea-21bd-4a83-9b91-63afdda88e0d/servicios
 
 ###
@@ -282,7 +282,7 @@ Content-Type: application/json
 ###
 
 # Actualizar proveedor (listo)
-PUT http://localhost:8080/api/proveedores/02147681-9ee1-44f1-8b70-e9f960624fe1
+PUT http://localhost:8080/api/proveedores/ecb3d0ed-d275-4771-94a4-a93a19f71062
 Content-Type: application/json
 
 {
@@ -304,7 +304,7 @@ GET http://localhost:8080/api/proveedores
 ###
 
 # Obtener proveedor (LISTO)
-GET http://localhost:8080/api/proveedores/02147681-9ee1-44f1-8b70-e9f960624fe1
+GET http://localhost:8080/api/proveedores/ecb3d0ed-d275-4771-94a4-a93a19f71062
 
 ###
 
