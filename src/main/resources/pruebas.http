@@ -77,8 +77,8 @@ GET http://localhost:8080/api/clientes/{idCliente}/vehiculos/{placaVehiculo}/ser
 
 ### OrdenesController Endpoints
 
-# Crear orden para un vehículo
-POST http://localhost:8080/api/ordenes/{idVehiculo}/vehiculo
+# Crear orden para un vehículo (listo)
+POST http://localhost:8080/api/ordenes/f7dda9b4-a8de-487b-a1dd-f429393e6227/vehiculo
 Content-Type: application/json
 
 {
@@ -88,13 +88,13 @@ Content-Type: application/json
 
 ###
 
-# Eliminar orden
-DELETE http://localhost:8080/api/ordenes/{idOrden}
+# Eliminar orden (listo)
+DELETE http://localhost:8080/api/ordenes/7f1224ee-4db3-48de-824f-51665333e70e
 
 ###
 
-# Actualizar orden
-PUT http://localhost:8080/api/ordenes/{idOrden}
+# Actualizar orden (LISTO)
+PUT http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698
 Content-Type: application/json
 
 {
@@ -105,18 +105,18 @@ Content-Type: application/json
 
 ###
 
-# Obtener orden
-GET http://localhost:8080/api/ordenes/{idOrden}
+# Obtener orden (listo)
+GET http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698
 
 ###
 
-# Listar todas las órdenes
+# Listar todas las órdenes (Listo)
 GET http://localhost:8080/api/ordenes
 
 ###
 
-# Asignar mecánico a orden
-PATCH http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}
+# Asignar mecánico a orden (Listo)
+PATCH http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/mecanicos/9953b337-6692-4a55-89b8-63baef20b18d
 Content-Type: application/json
 
 {
@@ -130,29 +130,29 @@ DELETE http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}
 
 ###
 
-# Obtener mecánicos por orden
-GET http://localhost:8080/api/ordenes/{idOrden}/mecanicos
+# Obtener mecánicos por orden (listo)
+GET http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/mecanicos
 
 ###
 
-# Registrar diagnóstico
-POST http://localhost:8080/api/ordenes/{idOrden}/diagnosticos
+# Registrar diagnóstico (listo)
+POST http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/diagnosticos
 Content-Type: application/json
 
 {
   "diagnosticoInicial": "Problema en el motor",
-  "diagnosticoFinal": "Cambio de bujías requerido"
+  "diagnosticoFinal": "Problema del motor resuelto"
 }
 
 ###
 
-# Obtener diagnóstico
-GET http://localhost:8080/api/ordenes/{idOrden}/diagnosticos
+# Obtener diagnóstico (listo)
+GET http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/diagnosticos
 
 ###
 
-# Registrar servicio en orden
-POST http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}/servicios/{idServicio}
+# Registrar servicio-Mecanico en orden (relación ternaria) (LISTO)
+POST http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/mecanicos/9953b337-6692-4a55-89b8-63baef20b18d/servicios/68e245fc-0f0c-43ef-935f-f103127d5829
 Content-Type: application/json
 
 {
@@ -163,8 +163,8 @@ Content-Type: application/json
 
 ###
 
-# Actualizar detalle de servicio
-PUT http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}/servicios/{idServicio}
+# Actualizar detalle de servicio-mecanico en la orden (LISTO)
+PUT http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/mecanicos/9953b337-6692-4a55-89b8-63baef20b18d/servicios/68e245fc-0f0c-43ef-935f-f103127d5829
 Content-Type: application/json
 
 {
@@ -175,19 +175,19 @@ Content-Type: application/json
 
 ###
 
-# Obtener detalle de orden
-GET http://localhost:8080/api/ordenes/{idOrden}/detalle
+# Obtener detalle de orden (LISTO)
+GET http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/detalle
 
 ###
 
 ### FacturaController Endpoints
 
-# Obtener factura por orden
-GET http://localhost:8080/api/facturas/{idOrden}/ordenes
+# Obtener factura por orden (falta)
+GET http://localhost:8080/api/facturas/b5d14bf4-29c9-47df-9295-b53502d67698/ordenes
 
 ###
 
-# Obtener facturas por placa de vehículo
+# Obtener facturas por placa de vehículo (falta)
 GET http://localhost:8080/api/facturas/{placa}/vehiculos
 
 ###
@@ -405,8 +405,8 @@ Content-Type: application/json
   "placa": "ABC123",
   "anio": "2020-01-01T00:00:00.000Z",
   "color": "Blanco",
-  "modelo": "Corolla",
-  "marca": "Toyota"
+  "modelo": "gt3",
+  "marca": "Porsche"
 }
 
 ###

@@ -131,8 +131,9 @@ public class OrdenesRepository {
             o.ESTADO,
             d.DIAGNOSTICOINICIAL,
             d.DIAGNOSTICOFINAL
-        FROM ORDEN o
+        FROM ORDEN o 
         LEFT JOIN DIAGNOSTICO d ON d.ORDEN_ID = o.ID
+        WHERE o.ESTADO <> 'INACTIVA'
         ORDER BY o.FECHAINGRESO DESC
     """;
 
@@ -237,12 +238,11 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
     public void registrarDiagnosticos(String idOrden, CrearDiagnosticoDTO dto) {
     try {
         String sql = """
-            INSERT INTO DIAGNOSTICO (ID, ORDEN_ID, DIAGNOSTICOINICIAL, DIAGNOSTICOFINAL)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO DIAGNOSTICO (ORDEN_ID, DIAGNOSTICOINICIAL, DIAGNOSTICOFINAL)
+            VALUES ( ?, ?, ?)
         """;
 
         jdbcTemplate.update(sql,
-                UUID.randomUUID().toString(),
                 idOrden,
                 dto.diagnosticoInicial(),
                 dto.diagnosticoFinal()
