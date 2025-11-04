@@ -3,6 +3,7 @@ package co.uniquindio.edu.controller;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
+import co.uniquindio.edu.dto.repuesto.ObtenerRepuestoDTO;
 import co.uniquindio.edu.dto.response.ResponseDTO;
 import co.uniquindio.edu.dto.servicio.ObtenerServicioDTO;
 import co.uniquindio.edu.services.OrdenesService;
@@ -49,7 +50,43 @@ public class ReportesController {
                 .body( pdf );
     }
 
-    // REPORTE 2
+
+    // REPORTE 2 (lista de todos los repuestos disponibles)
+    @GetMapping("/repuestos")
+    public ResponseEntity<ResponseDTO<List<ObtenerRepuestoDTO>>> listaRepuestos() {
+        List<ObtenerRepuestoDTO> lista = reportesService.listaRepuestos();
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, lista));
+    }
+
+    @GetMapping("/repuestos/pdf")
+    public ResponseEntity<byte[]> ReporteRepuestosPDF() {
+        List<ObtenerRepuestoDTO> lista = reportesService.listaRepuestos();
+        byte [] pdf = PdfGeneratorUtil.generarPDFRepuestos(lista);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= reporte_listaRepuestos.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body( pdf );
+    }
+
+
+    // REPORTE 3
+    @GetMapping("/servicios")
+    public ResponseEntity<ResponseDTO<List<ObtenerServicioDTO>>> listaServicios() {
+        List<ObtenerServicioDTO> lista = reportesService.listaServicios();
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, lista));
+    }
+
+    @GetMapping("/servicios/pdf")
+    public ResponseEntity<byte []> reporteListaServicios(){
+        List<ObtenerServicioDTO> lista = reportesService.listaServicios();
+        byte [] pdf = PdfGeneratorUtil.generarPDFListaServicios(lista);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reporte_listaServicios.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
+    // REPORTE 4
     @GetMapping("/mecanicos/{idOrden}/orden")
     public ResponseEntity<ResponseDTO<List<ObtenerMecanicoOrdenDTO>>> obtenerMecanicos(@PathVariable String idOrden) {
 
@@ -67,23 +104,6 @@ public class ReportesController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body( pdf );
 
-    }
-
-    // REPORTE 3
-    @GetMapping("/servicios")
-    public ResponseEntity<ResponseDTO<List<ObtenerServicioDTO>>> listaServicios() {
-        List<ObtenerServicioDTO> lista = reportesService.listaServicios();
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, lista));
-    }
-
-    @GetMapping("/servicios/pdf")
-    public ResponseEntity<byte []> reporteListaServicios(){
-        List<ObtenerServicioDTO> lista = reportesService.listaServicios();
-        byte [] pdf = PdfGeneratorUtil.generarPDFListaServicios(lista);
-        return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reporte_listaServicios.pdf")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(pdf);
     }
 
 }

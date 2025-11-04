@@ -444,10 +444,15 @@ GET http://localhost:8080/api/reportes/ordenes/pdf
 
 ###
 
-// Reporte 2 simple (lista de todos los mecanicos implicitos en una orden)
-GET http://localhost:8080/api/reportes/mecanicos/b5d14bf4-29c9-47df-9295-b53502d67698/ordenes/pdf
+# Reporte 2 simple (lista de todos los repuestos disponibles)
+GET http://localhost:8080/api/reportes/repuestos/pdf
 
 ###
 
 // Reporte 3 simple (lista de todos los servicios disponibles del taller)
 GET http://localhost:8080/api/reportes/servicios/pdf
+
+###
+
+// Reporte 4 Intermedio (lista de todos los mecanicos implicitos en una orden)
+GET http://localhost:8080/api/reportes/mecanicos/b5d14bf4-29c9-47df-9295-b53502d67698/ordenes/pdf
