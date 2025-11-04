@@ -30,16 +30,10 @@ public class ReportesServiceImpl implements ReportesService {
         return ordenesService.listaOrdenes();
     }
 
+    // REPORTE 2
     @Override
     public List<ObtenerRepuestoDTO> listaRepuestos() {
         return repuestosService.listaRepuestos();
-    }
-
-
-    // REPORTE 2
-    @Override
-    public List<ObtenerMecanicoOrdenDTO> obtenerMecanicos(String id) {
-        return ordenesService.obtenerMecanicosPorOrden(id);
     }
 
     // REPORTE 3
@@ -48,6 +42,17 @@ public class ReportesServiceImpl implements ReportesService {
         return serviciosService.listaServicios();
     }
 
+    // REPORTE 4
+    @Override
+    public List<ObtenerMecanicoOrdenDTO> obtenerMecanicos(String id) {
+        return ordenesService.obtenerMecanicosPorOrden(id);
+    }
 
+
+    // REPORTE 5
+    @Override
+    public List<ObtenerOrdenDTO> listaOrdenesCliente(String id) {
+        return ordenesService.listaOrdenesPorCliente(id);
+    }
 
 }

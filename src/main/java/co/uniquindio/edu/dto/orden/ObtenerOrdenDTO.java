@@ -6,14 +6,15 @@ import java.time.LocalDateTime;
 
 public record ObtenerOrdenDTO(String id,
                               String descripcion,
-
                               LocalDateTime fechaIngreso,
                               LocalDateTime fechaSalida, // si es null, sacar un mensaje como que no ha salido
                               EstadoOrden estado,
                               String diagnosticoInicial,
-                              String diagnosticoFinal) {
+                              String diagnosticoFinal,
+                              String placa
+                              ) {
 
-            //TODO Auto-generated constructor stub
+
     
     //para la ver la lista de todas las ordenes, se devuelven una lista de este DTO
 }

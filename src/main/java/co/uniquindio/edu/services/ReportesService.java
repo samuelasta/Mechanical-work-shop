@@ -22,4 +22,6 @@ public interface ReportesService {
     // Reporte 4 (lista de mecanicos de la orden)
     List<ObtenerMecanicoOrdenDTO>  obtenerMecanicos(String id);
 
+    // Reporte 5 (lista de ordenes del cliente)
+    List<ObtenerOrdenDTO> listaOrdenesCliente(String id);
 }

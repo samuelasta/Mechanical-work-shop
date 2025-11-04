@@ -65,8 +65,8 @@ GET http://localhost:8080/api/clientes/8b060c32-c3e7-46ef-b163-9143c011aece
 
 ###
 
-# Listar órdenes por cliente (falta)
-GET http://localhost:8080/api/clientes/8b060c32-c3e7-46ef-b163-9143c011aece/ordenes
+# Listar órdenes por cliente (listo)
+GET http://localhost:8080/api/clientes/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d/ordenes
 
 ###
 
@@ -456,3 +456,10 @@ GET http://localhost:8080/api/reportes/servicios/pdf
 
 // Reporte 4 Intermedio (lista de todos los mecanicos implicitos en una orden)
 GET http://localhost:8080/api/reportes/mecanicos/b5d14bf4-29c9-47df-9295-b53502d67698/ordenes/pdf
+
+###
+
+// Reporte 5 Intermedio (lista de ordenes del cliente)
+GET http://localhost:8080/api/reportes/ordenes/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d/clientes/pdf
+
+###

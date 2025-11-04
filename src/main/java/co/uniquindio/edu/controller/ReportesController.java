@@ -106,4 +106,21 @@ public class ReportesController {
 
     }
 
+    // REPORTE 5
+    @GetMapping("/ordenes/{idCliente}/clientes")
+    public ResponseEntity<ResponseDTO<List<ObtenerOrdenDTO>>> listaOrdenesCliente(@PathVariable String idCliente) {
+        List<ObtenerOrdenDTO> lista = reportesService.listaOrdenesCliente(idCliente);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, lista));
+    }
+
+    @GetMapping("/ordenes/{idCliente}/clientes/pdf")
+    public ResponseEntity<byte[]> reporteOrdenesClientePDF(@PathVariable String idCliente) {
+        List<ObtenerOrdenDTO> lista = reportesService.listaOrdenesCliente(idCliente);
+        byte [] pdf = PdfGeneratorUtil.generarPDFListaOrdenesCliente(lista);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= reporte_listaOrdenesCliente.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
 }

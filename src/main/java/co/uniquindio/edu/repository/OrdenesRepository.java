@@ -92,9 +92,11 @@ public class OrdenesRepository {
             o.FECHASALIDA,
             o.ESTADO,
             d.DIAGNOSTICOINICIAL,
-            d.DIAGNOSTICOFINAL
+            d.DIAGNOSTICOFINAL,
+            v.PLACA
         FROM ORDEN o
         LEFT JOIN DIAGNOSTICO d ON d.ORDEN_ID = o.ID
+        JOIN VEHICULO v ON v.ID = o.VEHICULO_ID
         WHERE o.ID = ?
     """;
 
@@ -110,7 +112,8 @@ public class OrdenesRepository {
                     : null,
                 EstadoOrden.valueOf(rs.getString("ESTADO")),
                 rs.getString("DIAGNOSTICOINICIAL"),
-                rs.getString("DIAGNOSTICOFINAL")
+                rs.getString("DIAGNOSTICOFINAL"),
+                rs.getString("PLACA")
         ), idOrden);
 
     } catch (Exception e) {
@@ -130,9 +133,11 @@ public class OrdenesRepository {
             o.FECHASALIDA,
             o.ESTADO,
             d.DIAGNOSTICOINICIAL,
-            d.DIAGNOSTICOFINAL
+            d.DIAGNOSTICOFINAL,
+            v.PLACA
         FROM ORDEN o 
         LEFT JOIN DIAGNOSTICO d ON d.ORDEN_ID = o.ID
+        JOIN VEHICULO v ON v.ID = o.VEHICULO_ID
         WHERE o.ESTADO <> 'INACTIVA'
         ORDER BY o.FECHAINGRESO DESC
     """;
@@ -149,7 +154,9 @@ public class OrdenesRepository {
                     : null,
                 EstadoOrden.valueOf(rs.getString("ESTADO")),
                 rs.getString("DIAGNOSTICOINICIAL"),
-                rs.getString("DIAGNOSTICOFINAL")
+                rs.getString("DIAGNOSTICOFINAL"),
+                rs.getString("PLACA")
+
         ));
     } catch (DataAccessException e) {
         throw new BadRequestException("Error al obtener la lista de ordenes: " + e.getMessage());
@@ -389,12 +396,14 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
             o.FECHASALIDA,
             o.ESTADO,
             d.DIAGNOSTICOINICIAL,
-            d.DIAGNOSTICOFINAL
+            d.DIAGNOSTICOFINAL,
+            v.PLACA
         FROM ORDEN o
-        JOIN DIAGNOSTICO d ON o.ID = d.ORDEN_ID
+        LEFT JOIN DIAGNOSTICO d ON o.ID = d.ORDEN_ID
         JOIN VEHICULO v ON v.ID = o.VEHICULO_ID
-        JOIN CLIENTE c ON c.ID = v.CLIENTE_ID
+        JOIN CLIENTES c ON c.ID = v.CLIENTES_ID
         WHERE c.ID = ?
+   
     """;
 
     return jdbcTemplate.query(sql, (rs, rowNum) -> new ObtenerOrdenDTO(
@@ -408,7 +417,8 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
                 : null,
             EstadoOrden.valueOf(rs.getString("ESTADO")),
             rs.getString("DIAGNOSTICOINICIAL"),
-            rs.getString("DIAGNOSTICOFINAL")
+            rs.getString("DIAGNOSTICOFINAL"),
+            rs.getString("PLACA")
     ), idCliente);
 }
 
