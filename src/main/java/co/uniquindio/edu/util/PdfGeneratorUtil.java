@@ -243,7 +243,7 @@ public class PdfGeneratorUtil {
             // TITULO
 
             Font titleFont = new Font(Font.HELVETICA, 18, Font.BOLD, new Color(33, 66, 99));
-            Paragraph title = new Paragraph("Listado General de Órdenes", titleFont);
+            Paragraph title = new Paragraph("Listado de ordenes del cliente", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             title.setSpacingAfter(20);
             document.add(title);
