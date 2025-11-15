@@ -5,6 +5,7 @@ import co.uniquindio.edu.dto.cliente.ObtenerClienteDTO;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import co.uniquindio.edu.dto.response.ResponseDTO;
 import co.uniquindio.edu.dto.servicio.ObtenerServicioDTO;
+import co.uniquindio.edu.repository.ClienteRepository;
 import co.uniquindio.edu.services.ClientesService;
 import co.uniquindio.edu.services.OrdenesService;
 import co.uniquindio.edu.services.ServiciosService;
@@ -23,6 +24,7 @@ public class ClientesController {
     private final ClientesService clienteService;
     private final OrdenesService ordenesService;
     private final ServiciosService serviciosService;
+    private final ClienteRepository clienteRepository;
 
     @PostMapping
     public ResponseEntity<ResponseDTO<String>> crearCliente(@RequestBody CrearClienteDTO crearClienteDTO){
@@ -60,6 +62,12 @@ public class ClientesController {
     public ResponseEntity<ResponseDTO<List<ObtenerServicioDTO>>> listaServiciosPorVehiculo(@PathVariable String idCliente, @PathVariable String placaVehiculo){
         List<ObtenerServicioDTO> servicios = serviciosService.listaServiciosPorVehiculo(idCliente, placaVehiculo);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  servicios));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDTO<List<ObtenerClienteDTO>>> obtenerClientes(){
+        List<ObtenerClienteDTO> listaClientes = clienteRepository.listarClientes();
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  listaClientes));
     }
 
 }

@@ -65,6 +65,10 @@ GET http://localhost:8080/api/clientes/8b060c32-c3e7-46ef-b163-9143c011aece
 
 ###
 
+GET http://localhost:8080/api/clientes/all
+
+###
+
 # Listar órdenes por cliente (listo)
 GET http://localhost:8080/api/clientes/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d/ordenes
 

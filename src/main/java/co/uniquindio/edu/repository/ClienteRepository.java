@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -242,18 +241,81 @@ public class ClienteRepository {
     }
 
 
+    @Transactional(readOnly = true)
     public List<ObtenerClienteDTO> listarClientes() {
-        //lista cliente
-        String sql = "SELECT ID, NOMRE1,NOMRE2,APELLIDO1,APELLIDO2,EMAIL FROM CLIENTES";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new ObtenerClienteDTO(
-                rs.getString("ID"),
-                rs.getString("NOMBRE1"),
-                rs.getString("NOMBRE2"),
-                rs.getString("APELLIDO1"),
-                rs.getString("APELLIDO2"),
-                rs.getString("EMAIL"),
-                null, null, null, null, null
-        ));
+        // 1. Consulta para todos los clientes y su ubicación (la más pesada)
+        String sqlClientesUbicacion = """
+        SELECT
+          c.ID,
+          c.NOMBRE1,
+          c.NOMBRE2,
+          c.APELLIDO1,
+          c.APELLIDO2,
+          c.EMAIL,
+          d.DIRECCION,
+          b.BARRIO,
+          ci.CIUDAD,
+          dep.DEPARTAMENTO
+        FROM CLIENTES c
+        LEFT JOIN DIRECCION d      ON d.ID = c.DIRECCION_ID
+        LEFT JOIN BARRIO b         ON b.ID = d.BARRIO_ID
+        LEFT JOIN CIUDAD ci        ON ci.ID = b.CIUDAD_ID
+        LEFT JOIN DEPARTAMENTO dep ON dep.ID = ci.DEPARTAMENTO_ID
+        WHERE c.ESTADO <> 'INACTIVO'
+        ORDER BY c.ID
+    """;
+
+        // Un mapa para almacenar los DTOs, usando el ID del cliente como clave.
+        // Esto permite acceder rápidamente al cliente para añadirle los teléfonos después.
+        Map<String, ObtenerClienteDTO> clienteMap = new LinkedHashMap<>();
+
+        // Ejecutar la primera consulta y poblar el mapa
+        jdbcTemplate.query(sqlClientesUbicacion, (rs) -> {
+            String idCliente = rs.getString("ID");
+
+            // Creamos el DTO con los datos principales, inicializando la lista de teléfonos vacía
+            ObtenerClienteDTO dto = new ObtenerClienteDTO(
+                    idCliente,
+                    rs.getString("NOMBRE1"),
+                    rs.getString("NOMBRE2"),
+                    rs.getString("APELLIDO1"),
+                    rs.getString("APELLIDO2"),
+                    rs.getString("EMAIL"),
+                    new ArrayList<>(), // ¡Lista de teléfonos vacía por ahora!
+                    rs.getString("DIRECCION"),
+                    rs.getString("BARRIO"),
+                    rs.getString("CIUDAD"),
+                    rs.getString("DEPARTAMENTO")
+            );
+            clienteMap.put(idCliente, dto);
+        });
+
+        // 2. Consulta para TODOS los teléfonos de TODOS los clientes activos
+        String sqlTelefonos = """
+        SELECT t.CLIENTES_ID, t.TIPO, t.NUMERO
+        FROM TELEFONO t
+        JOIN CLIENTES c ON c.ID = t.CLIENTES_ID
+        WHERE c.ESTADO <> 'INACTIVO'
+        ORDER BY t.CLIENTES_ID, t.ID
+    """;
+
+        // Ejecutar la segunda consulta y asignar los teléfonos a los DTOs en el mapa
+        jdbcTemplate.query(sqlTelefonos, (rs) -> {
+            String idCliente = rs.getString("CLIENTES_ID");
+
+            // Verificamos que el cliente exista en nuestro mapa
+            if (clienteMap.containsKey(idCliente)) {
+                CrearTelefonoDTO telefono = new CrearTelefonoDTO(
+                        rs.getString("TIPO"),
+                        rs.getString("NUMERO")
+                );
+                // Agregamos el teléfono a la lista del DTO que ya está en el mapa
+                clienteMap.get(idCliente).telefonos().add(telefono);
+            }
+        });
+
+        // 3. Devolver la lista final de todos los DTOs
+        return new ArrayList<>(clienteMap.values());
     }
 
 }
