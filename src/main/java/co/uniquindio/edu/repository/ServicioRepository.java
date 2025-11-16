@@ -78,10 +78,10 @@ public class ServicioRepository {
     @Transactional(readOnly = true)
     public List<ObtenerServicioDTO> listaServicios() {
         String sql = """
-            SELECT ID, DESCRIPCION, TIPO, COSTOUNITARIO
+            SELECT ID, DESCRIPCION, TIPO, COSTOUNITARIO, FECHA
               FROM SERVICIO
               WHERE ESTADO <> 'INACTIVO'
-             ORDER BY FECHA DESC
+              ORDER BY FECHA DESC
         """;
 
         return jdbcTemplate.query(sql, (rs, rowNum) ->
@@ -89,7 +89,8 @@ public class ServicioRepository {
                         rs.getString("ID"),
                         TipoServicio.valueOf(rs.getString("TIPO")),
                         rs.getString("DESCRIPCION"),
-                        rs.getDouble("COSTOUNITARIO")
+                        rs.getObject("FECHA", LocalDate.class),
+                        rs.getInt("COSTOUNITARIO")
                 )
         );
     }
@@ -98,7 +99,7 @@ public class ServicioRepository {
     @Transactional(readOnly = true)
     public ObtenerServicioDTO obtenerServicio(String id) {
         String sql = """
-            SELECT ID, DESCRIPCION, TIPO, COSTOUNITARIO
+            SELECT ID, DESCRIPCION, TIPO, COSTOUNITARIO, FECHA
               FROM SERVICIO
              WHERE ID = ? AND ESTADO <> 'INACTIVO'
         """;
@@ -109,7 +110,8 @@ public class ServicioRepository {
                                     rs.getString("ID"),
                                     TipoServicio.valueOf(rs.getString("TIPO")),
                                     rs.getString("DESCRIPCION"),
-                                    rs.getDouble("COSTOUNITARIO")
+                                    rs.getObject("FECHA", LocalDate.class),
+                                    rs.getInt("COSTOUNITARIO")
                             ),
                     id
             );
@@ -140,7 +142,7 @@ public class ServicioRepository {
     public List<ObtenerServicioDTO> listaServiciosPorMecanico(String idMecanico) {
 
         String sql = """
-            SELECT s.ID, s.DESCRIPCION, s.TIPO, s.COSTOUNITARIO
+            SELECT s.ID, s.DESCRIPCION, s.TIPO, s.COSTOUNITARIO, s.FECHA
               FROM SERVICIO s
               JOIN ORDEN_SERVICIO_MECANICO osm ON osm.SERVICIO_ID = s.ID
              WHERE osm.MECANICO_ID = ?
@@ -152,7 +154,8 @@ public class ServicioRepository {
                                 rs.getString("ID"),
                                 TipoServicio.valueOf(rs.getString("TIPO")),
                                 rs.getString("DESCRIPCION"),
-                                rs.getDouble("COSTOUNITARIO")
+                                rs.getObject("FECHA", LocalDate.class),
+                                rs.getInt("COSTOUNITARIO")
                         ),
                 idMecanico
         );
@@ -179,7 +182,8 @@ public class ServicioRepository {
                                 rs.getString("ID"),
                                 TipoServicio.valueOf(rs.getString("TIPO")),
                                 rs.getString("DESCRIPCION"),
-                                rs.getDouble("COSTOUNITARIO")
+                                rs.getObject("FECHA", LocalDate.class),
+                                rs.getInt("COSTOUNITARIO")
                         ),
                 idCliente, placaVehiculo
         );

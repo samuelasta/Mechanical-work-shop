@@ -4,9 +4,10 @@ import java.util.Date;
 
 public record ObtenerVehiculoDTO(String id,
                                  String placa,
-                                 Date anio,
+                                 int anio,
                                  String color,
                                  String modelo,
-                                 String marca
+                                 String marca,
+                                 String idPropietario
 ) {
 }

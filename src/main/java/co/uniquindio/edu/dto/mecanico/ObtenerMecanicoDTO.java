@@ -11,5 +11,6 @@ public record ObtenerMecanicoDTO(String id,
                                  String apellido2,
                                  String email,
                                  int experiencia,
+                                 int salario,
                                  List<TipoEspecializacion> especializacion) {
 }

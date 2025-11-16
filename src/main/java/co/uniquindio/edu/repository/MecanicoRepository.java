@@ -28,7 +28,7 @@ public class MecanicoRepository {
 
         //crea mecanico
         String mecanicoId = java.util.UUID.randomUUID().toString();
-        String sqlMecanico = "INSERT INTO MECANICO (ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA, ESTADO) VALUES(?,?,?,?,?,?,?,?)";
+        String sqlMecanico = "INSERT INTO MECANICO (ID, NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,EMAIL,EXPERIENCIA, ESTADO, SALARIO) VALUES(?,?,?,?,?,?,?,?,?)";
         jdbcTemplate.update(sqlMecanico,
                 mecanicoId,
                 crearMecanicoDTO.nombre1(),
@@ -37,7 +37,8 @@ public class MecanicoRepository {
                 crearMecanicoDTO.apellido2(),
                 crearMecanicoDTO.email(),
                 crearMecanicoDTO.experiencia(),
-                "ACTIVO"
+                "ACTIVO",
+                crearMecanicoDTO.salario()
         );
 
 
@@ -55,7 +56,7 @@ public class MecanicoRepository {
     @Transactional
     public void actualizarMecanico(String mecanicoId, CrearMecanicoDTO crearMecanicoDTO) {
 
-        String sqlMecanico = "UPDATE MECANICO SET NOMBRE1=?, NOMBRE2=?, APELLIDO1=?, APELLIDO2=?, EXPERIENCIA=?, EMAIL=? WHERE ID=?";
+        String sqlMecanico = "UPDATE MECANICO SET NOMBRE1=?, NOMBRE2=?, APELLIDO1=?, APELLIDO2=?, EXPERIENCIA=?, EMAIL=?, SALARIO=? WHERE ID=?";
         jdbcTemplate.update(sqlMecanico,
                 crearMecanicoDTO.nombre1(),
                 crearMecanicoDTO.nombre2(),
@@ -63,6 +64,8 @@ public class MecanicoRepository {
                 crearMecanicoDTO.apellido2(),
                 crearMecanicoDTO.experiencia(),
                 crearMecanicoDTO.email(),
+                crearMecanicoDTO.salario()
+                ,
                 mecanicoId);
 
         if(!crearMecanicoDTO.especializacion().isEmpty()){
@@ -94,7 +97,7 @@ public class MecanicoRepository {
         try {
             // Consulta principal del mecánico
             String sqlMecanico = """
-            SELECT ID, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, EXPERIENCIA, EMAIL
+            SELECT ID, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, EXPERIENCIA, EMAIL, SALARIO
             FROM MECANICO
             WHERE ID = ? AND ESTADO <> 'INACTIVO'
         """;
@@ -110,6 +113,8 @@ public class MecanicoRepository {
                             rs.getString("APELLIDO2"),
                             rs.getString("EMAIL"),
                             rs.getInt("EXPERIENCIA"),
+                            rs.getInt("SALARIO")
+                            ,
                             new ArrayList<>() // se llena más abajo
                     ),
                     id
@@ -137,6 +142,7 @@ public class MecanicoRepository {
                     mecanico.apellido2(),
                     mecanico.email(),
                     mecanico.experiencia(),
+                    mecanico.salario(),
                     especializaciones
             );
 
@@ -150,7 +156,7 @@ public class MecanicoRepository {
     public List<ObtenerMecanicoDTO> listarMecanicos() {
 
         String sql = """
-        SELECT ID, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, EXPERIENCIA, EMAIL
+        SELECT ID, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, EXPERIENCIA, EMAIL, SALARIO
         FROM MECANICO
         WHERE ESTADO <> 'INACTIVO'
         ORDER BY APELLIDO1, NOMBRE1
@@ -167,6 +173,8 @@ public class MecanicoRepository {
                     rs.getString("APELLIDO2"),
                     rs.getString("EMAIL"),
                     rs.getInt("EXPERIENCIA"),
+                    rs.getInt("SALARIO")
+                    ,
                     new ArrayList<>() // luego se llena con especializaciones
             );
         });
@@ -198,6 +206,7 @@ public class MecanicoRepository {
                         m.apellido2(),
                         m.email(),
                         m.experiencia(),
+                        m.salario(),
                         mapaEspecializaciones.getOrDefault(m.id(), List.of())
                 ))
                 .toList();

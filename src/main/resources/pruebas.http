@@ -219,6 +219,7 @@ Content-Type: application/json
   "apellido2": "Martínez",
   "email": "pedro.rodriguez@example.com",
   "experiencia": 5,
+  "salario": 200000,
   "especializacion": ["LATONERIA_Y_PINTURA"],
   "estado": "ACTIVO"
 }
@@ -367,7 +368,9 @@ Content-Type: application/json
 {
   "tipoServicio": "PINTURA",
   "descripcion": "Se pinta todo el vehiculo del color que el cliente desee",
-  "costoUnitario": 100000.0
+  "costoUnitario": 1000000,
+  "fechaCreacion": "2025-10-21"
+
 }
 
 ###
@@ -407,7 +410,7 @@ Content-Type: application/json
 
 {
   "placa": "ABC123",
-  "anio": "2020-01-01T00:00:00.000Z",
+  "anio": 2020,
   "color": "Blanco",
   "modelo": "gt3",
   "marca": "Porsche"
@@ -421,7 +424,7 @@ Content-Type: application/json
 
 {
   "placa": "ABC123",
-  "anio": "2021-01-01T00:00:00.000Z",
+  "anio": 2023,
   "color": "Azul",
   "modelo": "Corolla",
   "marca": "Toyota"
@@ -435,7 +438,7 @@ GET http://localhost:8080/api/vehiculos
 ###
 
 # Obtener vehículo (listo)
-GET http://localhost:8080/api/vehiculos/d4941010-2051-4ccd-9bcc-3f1b186a0032
+GET http://localhost:8080/api/vehiculos/92385571-707c-44c7-b44f-3c71635a6953
 ###
 
 # Eliminar vehículo (listo)

@@ -9,8 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 @RequiredArgsConstructor
 @Repository
 public class ProveedorRepository {
@@ -80,20 +80,50 @@ public class ProveedorRepository {
 
     @Transactional(readOnly = true)
     public List<ObtenerProveedorDTO> listaProvedores() {
-        String sql = """
-            SELECT ID, NOMBRE, EMAIL
-            FROM PROVEEDORES
-            WHERE ESTADO <> 'INACTIVO'
-            ORDER BY NOMBRE
-        """;
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new ObtenerProveedorDTO(
-                        rs.getString("ID"),
-                        rs.getString("NOMBRE"),
-                        rs.getString("EMAIL"),
-                        java.util.Collections.emptyList()
-                )
-        );
+        // 1. Consulta principal: proveedores activos
+        String sqlProveedores = """
+        SELECT ID, NOMBRE, EMAIL
+        FROM PROVEEDORES
+        WHERE ESTADO <> 'INACTIVO'
+        ORDER BY NOMBRE
+    """;
+
+        Map<String, ObtenerProveedorDTO> proveedorMap = new LinkedHashMap<>();
+
+        jdbcTemplate.query(sqlProveedores, rs -> {
+            String idProveedor = rs.getString("ID");
+
+            ObtenerProveedorDTO dto = new ObtenerProveedorDTO(
+                    idProveedor,
+                    rs.getString("NOMBRE"),
+                    rs.getString("EMAIL"),
+                    new ArrayList<>() // lista vacía de teléfonos
+            );
+
+            proveedorMap.put(idProveedor, dto);
+        });
+
+        // 2. Consulta de teléfonos asociados a proveedores
+        String sqlTelefonos = """
+        SELECT PROVEEDORES_ID, TIPO, NUMERO
+        FROM TELEFONO
+        WHERE PROVEEDORES_ID IS NOT NULL
+        ORDER BY PROVEEDORES_ID
+    """;
+
+        jdbcTemplate.query(sqlTelefonos, rs -> {
+            String idProveedor = rs.getString("PROVEEDORES_ID");
+
+            if (proveedorMap.containsKey(idProveedor)) {
+                CrearTelefonoDTO telefono = new CrearTelefonoDTO(
+                        rs.getString("TIPO"),
+                        rs.getString("NUMERO")
+                );
+                proveedorMap.get(idProveedor).telefonos().add(telefono);
+            }
+        });
+
+        return new ArrayList<>(proveedorMap.values());
     }
 
     @Transactional(readOnly = true)
@@ -115,7 +145,7 @@ public class ProveedorRepository {
                 id
         );
 
-        // 2) Teléfonos activos del proveedor
+        //  Teléfonos activos del proveedor
         String sqlTel = """
             SELECT TIPO, NUMERO
             FROM TELEFONO

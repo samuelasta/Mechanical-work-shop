@@ -65,7 +65,7 @@ public class VehiculoRepository {
         jdbcTemplate.update(sqlVehiculo,
                 vehiculoId,
                 vehiculoDTO.placa(),
-                new Date(vehiculoDTO.anio().getTime()),
+                vehiculoDTO.anio(),
                 vehiculoDTO.color(),
                 modeloId,
                 idCliente
@@ -135,7 +135,7 @@ public class VehiculoRepository {
         """;
         jdbcTemplate.update(sqlVehiculo,
                 vehiculoDTO.placa(),
-                new Date(vehiculoDTO.anio().getTime()),
+                vehiculoDTO.anio(),
                 vehiculoDTO.color(),
                 idCliente,
                 idVehiculo
@@ -151,7 +151,8 @@ public class VehiculoRepository {
                    v.ANIO,
                    v.COLOR,
                    mo.NOMBRE AS MODELO,
-                   ma.NOMBRE AS MARCA
+                   ma.NOMBRE AS MARCA,
+                   V.CLIENTES_ID
               FROM VEHICULO v 
               JOIN MODELO mo ON mo.ID = v.MODELO_ID
               JOIN MARCA ma ON ma.ID = mo.MARCA_ID
@@ -163,10 +164,11 @@ public class VehiculoRepository {
                 (rs, rowNum) -> new ObtenerVehiculoDTO(
                         rs.getString("ID"),
                         rs.getString("PLACA"),
-                        rs.getDate("ANIO"),
+                        rs.getInt("ANIO"),
                         rs.getString("COLOR"),
                         rs.getString("MODELO"),
-                        rs.getString("MARCA")
+                        rs.getString("MARCA"),
+                        rs.getString("CLIENTES_ID")
                 )
         );
     }
@@ -180,7 +182,8 @@ public class VehiculoRepository {
                    v.ANIO,
                    v.COLOR,
                    mo.NOMBRE AS MODELO,
-                   ma.NOMBRE AS MARCA
+                   ma.NOMBRE AS MARCA,
+                   v.CLIENTES_ID
               FROM VEHICULO v
               JOIN MODELO mo ON mo.ID = v.MODELO_ID
               JOIN MARCA ma ON ma.ID = mo.MARCA_ID
@@ -193,10 +196,11 @@ public class VehiculoRepository {
                     (rs, rowNum) -> new ObtenerVehiculoDTO(
                             rs.getString("ID"),
                             rs.getString("PLACA"),
-                            rs.getDate("ANIO"),
+                            rs.getInt("ANIO"),
                             rs.getString("COLOR"),
                             rs.getString("MODELO"),
-                            rs.getString("MARCA")
+                            rs.getString("MARCA"),
+                            rs.getString("CLIENTES_ID")
                     ),
                     idVehiculo
             );
