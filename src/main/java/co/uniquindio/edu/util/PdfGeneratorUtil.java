@@ -112,7 +112,7 @@ public class PdfGeneratorUtil {
                 table.addCell(new Phrase(mecanico.apellido1()));
                 table.addCell(new Phrase(mecanico.apellido2() != null ? mecanico.apellido2() : "No registrado"));
                 table.addCell(new Phrase(mecanico.email()));
-                table.addCell(new Phrase(mecanico.rolDTO().rol().name()));
+                table.addCell(new Phrase(mecanico.rolDTO()));
                 table.addCell(new Phrase(mecanico.experiencia() + ""));
             }
 

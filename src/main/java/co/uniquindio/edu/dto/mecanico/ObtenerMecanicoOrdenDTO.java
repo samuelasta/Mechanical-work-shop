@@ -6,7 +6,7 @@ public record ObtenerMecanicoOrdenDTO(String id,
                                       String apellido1,
                                       String apellido2,
                                       String email,
-                                      RolDTO rolDTO,
+                                      String rolDTO,
                                       int experiencia
                                       ) {
 }

@@ -213,7 +213,7 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
     public List<ObtenerMecanicoOrdenDTO> obtenerMecanicosPorOrden(String idOrden) {
 
     String sql = """
-        SELECT 
+        SELECT\s
             m.ID,
             m.NOMBRE1,
             m.NOMBRE2,
@@ -222,9 +222,24 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
             m.EMAIL,
             m.EXPERIENCIA,
             dom.ROL
-        FROM DTL_ORD_MEC dom
-        JOIN MECANICO m ON dom.MECANICO_ID = m.ID
-        WHERE dom.ORDEN_ID = ?
+            FROM DTL_ORD_MEC dom
+            JOIN MECANICO m ON dom.MECANICO_ID = m.ID
+            WHERE dom.ORDEN_ID = ?
+                              
+            UNION
+                              
+            SELECT\s
+            m.ID,
+            m.NOMBRE1,
+                                  m.NOMBRE2,
+                                  m.APELLIDO1,
+                                  m.APELLIDO2,
+                                  m.EMAIL,
+                                  m.EXPERIENCIA,
+                                  NULL AS ROL
+                              FROM MOS mos
+                              JOIN MECANICO m ON mos.MECANICO_ID = m.ID
+                              WHERE mos.ORDEN_ID = ?
     """;
 
     try {
@@ -235,9 +250,9 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
                 rs.getString("APELLIDO1"),
                 rs.getString("APELLIDO2"),
                 rs.getString("EMAIL"),
-                new RolDTO(Rol.valueOf(rs.getString("ROL"))),
+                rs.getString("ROL"),
                 rs.getInt("EXPERIENCIA")
-                ), idOrden);
+                ), idOrden, idOrden);
 
     } catch (DataAccessException e) {
         throw new BadRequestException("Error al obtener los mecánicos de la orden: " + e.getMessage());
