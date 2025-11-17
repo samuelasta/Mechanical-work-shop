@@ -3,10 +3,7 @@ package co.uniquindio.edu.controller;
 import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
-import co.uniquindio.edu.dto.orden.ActualizarOrdenDTO;
-import co.uniquindio.edu.dto.orden.CrearOrdenDTO;
-import co.uniquindio.edu.dto.orden.DetalleOrdenDTO;
-import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
+import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.response.ResponseDTO;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
 import co.uniquindio.edu.services.OrdenesService;
@@ -118,6 +115,33 @@ public class OrdenesController {
     public ResponseEntity<ResponseDTO<List<DetalleOrdenDTO>>> obtenerDetalleOrden(@PathVariable String idOrden){
         List<DetalleOrdenDTO> detalle = ordenesService.obtenerDetalleOrden(idOrden);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, detalle));
+    }
+
+    @PostMapping("/{idOrden}/repuestos/{idRepuesto}/servicios/{idServicio}")
+    public ResponseEntity<ResponseDTO<String>> asignarRepuestoServicio(@PathVariable String idRepuesto,
+                                                                                     @PathVariable String idServicio,
+                                                                                     @PathVariable String idOrden,
+                                                                                     @RequestBody RepuestosServicioDTO repuestosServicioDTO){
+        ordenesService.asignarRepuestos(idRepuesto, idServicio, idOrden, repuestosServicioDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "Repuestos asignados correctamente"));
+    }
+
+    @DeleteMapping("/{idOrden}/repuestos/{idRepuesto}/servicios/{idServicio}")
+    public ResponseEntity<ResponseDTO<String>> eliminarRepuestoOrden(@PathVariable String idRepuesto, @PathVariable String idServicio, @PathVariable String idOrden){
+        ordenesService.eliminarRepuesto(idRepuesto, idServicio, idOrden);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "Repuesto eliminado correctamente"));
+    }
+
+    @GetMapping("/{idOrden}/servicios/{idServicio}")
+    public ResponseEntity<ResponseDTO<List<ObtenerRepuestoOrdenDTO>>>  obtenerRepuestos(@PathVariable String idOrden, @PathVariable String idServicio){
+        List<ObtenerRepuestoOrdenDTO> repuestos = ordenesService.obtenerRepuestos(idOrden, idServicio);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, repuestos));
+    }
+
+    @PatchMapping("/{idOrden}/repuestos/{idRepuesto}/servicios/{idServicio}")
+    public ResponseEntity<ResponseDTO<String>> actualizarRepuesto(@PathVariable String idRepuesto, @PathVariable String idServicio, @PathVariable String idOrden, @RequestBody RepuestosServicioDTO repuestosServicioDTO) {
+        ordenesService.actualizarRepuestoOrdenServicio(idRepuesto, idServicio, idOrden, repuestosServicioDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "Repuesto actualizado correctamente"));
     }
 
 

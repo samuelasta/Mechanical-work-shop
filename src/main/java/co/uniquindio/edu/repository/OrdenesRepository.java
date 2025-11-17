@@ -3,10 +3,7 @@ package co.uniquindio.edu.repository;
 import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
-import co.uniquindio.edu.dto.orden.ActualizarOrdenDTO;
-import co.uniquindio.edu.dto.orden.CrearOrdenDTO;
-import co.uniquindio.edu.dto.orden.DetalleOrdenDTO;
-import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
+import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
 import lombok.RequiredArgsConstructor;
 import co.uniquindio.edu.exception.BadRequestException;
@@ -431,4 +428,81 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
     ), idCliente);
 }
 
+
+    public void asignarRepuestos(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO) {
+        try {
+            String sql = """
+        
+                    INSERT INTO DTL_SER_REP (SERVICIO_ID, REPUESTO_ID, ORDEN_ID, CANTIDAD) VALUES (?,?,?,?)
+        """;
+        jdbcTemplate.update(sql, idServicio, idRepuesto, idOrden, repuestosServicioDTO.cantidad());
+        }catch (DataAccessException e) {
+            throw new BadRequestException("Error al asignar repuesto: " + e.getMessage());
+        }
+    }
+
+    public void eliminarRepuesto(String idRepuesto, String idServicio, String idOrden) {
+        try {
+            String sql = """
+            DELETE FROM DTL_SER_REP d
+            WHERE d.REPUESTO_ID = ?
+              AND d.SERVICIO_ID = ?
+              AND d.ORDEN_ID = ?
+        """;
+
+            jdbcTemplate.update(sql, idRepuesto, idServicio, idOrden);
+        } catch (DataAccessException e) {
+            throw new BadRequestException("Error al eliminar repuesto: " + e.getMessage());
+        }
+    }
+
+    public List<ObtenerRepuestoOrdenDTO> obtenerRepuesto(String idOrden, String idServicio) {
+        try {
+            String sql = """
+            SELECT r.id, r.nombre, r.costoUnitario, d.CANTIDAD
+            FROM REPUESTO r
+            JOIN DTL_SER_REP d ON d.REPUESTO_ID = r.id
+             WHERE d.SERVICIO_ID = ?
+             AND d.ORDEN_ID = ?
+            """;
+
+            return jdbcTemplate.query(sql,
+                    new Object[]{idServicio, idOrden},
+                    (rs, rowNum) -> new ObtenerRepuestoOrdenDTO(
+                            rs.getString("id"),
+                            rs.getString("nombre"),
+                            rs.getDouble("costoUnitario"),
+                            rs.getInt("cantidad")
+                    )
+            );
+        } catch (DataAccessException e) {
+            throw new BadRequestException("Error al obtener repuestos: " + e.getMessage());
+        }
+    }
+
+    public void actualizarRepuesto(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO) {
+        try {
+            String sql = """
+            UPDATE DTL_SER_REP
+            SET CANTIDAD = ?
+            WHERE REPUESTO_ID = ?
+              AND SERVICIO_ID = ?
+              AND ORDEN_ID = ?
+        """;
+
+            int filas = jdbcTemplate.update(sql,
+                    repuestosServicioDTO.cantidad(),
+                    idRepuesto,
+                    idServicio,
+                    idOrden
+            );
+
+            if (filas == 0) {
+                throw new ResourceNotFoundException("No se encontró el repuesto vinculado al servicio en esa orden");
+            }
+
+        } catch (DataAccessException e) {
+            throw new BadRequestException("Error al actualizar repuesto: " + e.getMessage());
+        }
+    }
 }

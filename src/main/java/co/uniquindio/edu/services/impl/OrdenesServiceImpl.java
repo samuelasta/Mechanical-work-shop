@@ -4,10 +4,7 @@ import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
-import co.uniquindio.edu.dto.orden.ActualizarOrdenDTO;
-import co.uniquindio.edu.dto.orden.CrearOrdenDTO;
-import co.uniquindio.edu.dto.orden.DetalleOrdenDTO;
-import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
+import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
 import co.uniquindio.edu.model.enums.Rol;
 import co.uniquindio.edu.repository.OrdenesRepository;
@@ -23,6 +20,7 @@ import java.util.List;
 public class OrdenesServiceImpl implements OrdenesService {
 
     private final OrdenesRepository ordenesRepository;
+
 
     @Override
     public void crearOrden(String idVehiculo, CrearOrdenDTO crearOrdenDTO) {
@@ -97,5 +95,25 @@ public class OrdenesServiceImpl implements OrdenesService {
     @Override
     public List<ObtenerOrdenDTO> listaOrdenesPorCliente(String idCliente) {
         return ordenesRepository.listaOrdenesPorCliente(idCliente);
+    }
+
+    @Override
+    public void asignarRepuestos(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO) {
+         ordenesRepository.asignarRepuestos( idRepuesto,  idServicio, idOrden,  repuestosServicioDTO);
+    }
+
+    @Override
+    public void eliminarRepuesto(String idRepuesto, String idServicio, String idOrden) {
+        ordenesRepository.eliminarRepuesto(idRepuesto, idServicio, idOrden);
+    }
+
+    @Override
+    public List<ObtenerRepuestoOrdenDTO> obtenerRepuestos(String idOrden, String idServicio) {
+        return ordenesRepository.obtenerRepuesto(idOrden, idServicio);
+    }
+
+    @Override
+    public void actualizarRepuestoOrdenServicio(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO) {
+        ordenesRepository.actualizarRepuesto(idRepuesto, idServicio, idOrden, repuestosServicioDTO);
     }
 }

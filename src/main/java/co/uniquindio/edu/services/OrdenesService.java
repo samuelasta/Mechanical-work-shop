@@ -4,10 +4,7 @@ import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
-import co.uniquindio.edu.dto.orden.ActualizarOrdenDTO;
-import co.uniquindio.edu.dto.orden.CrearOrdenDTO;
-import co.uniquindio.edu.dto.orden.DetalleOrdenDTO;
-import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
+import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
 import co.uniquindio.edu.model.enums.Rol;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,4 +27,8 @@ public interface OrdenesService {
     void actualizarDetalleServicio(String idOrden, String idMecanico, String idServicio, DetalleServicioMecanicoDTO detalleServicioMecanicoDTO);
     List<DetalleOrdenDTO>  obtenerDetalleOrden(String idOrden);
     List<ObtenerOrdenDTO> listaOrdenesPorCliente(String idCliente);
+    void asignarRepuestos(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO);
+    void eliminarRepuesto(String idRepuesto, String idServicio, String idOrden);
+    List<ObtenerRepuestoOrdenDTO> obtenerRepuestos(String idOrden, String idServicio);
+    void actualizarRepuestoOrdenServicio(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO);
 }
