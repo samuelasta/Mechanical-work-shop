@@ -7,6 +7,7 @@ import co.uniquindio.edu.dto.mecanico.RolDTO;
 import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
 import co.uniquindio.edu.model.enums.Rol;
+import co.uniquindio.edu.repository.FacturaRepository;
 import co.uniquindio.edu.repository.OrdenesRepository;
 import co.uniquindio.edu.services.OrdenesService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.List;
 public class OrdenesServiceImpl implements OrdenesService {
 
     private final OrdenesRepository ordenesRepository;
-
+    private final FacturaRepository facturaRepository;
 
     @Override
     public void crearOrden(String idVehiculo, CrearOrdenDTO crearOrdenDTO) {
@@ -115,5 +116,11 @@ public class OrdenesServiceImpl implements OrdenesService {
     @Override
     public void actualizarRepuestoOrdenServicio(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO) {
         ordenesRepository.actualizarRepuesto(idRepuesto, idServicio, idOrden, repuestosServicioDTO);
+    }
+
+    @Override
+    public void finalizarOrden(String idOrden) {
+        ordenesRepository.finalizarOrden(idOrden);
+        facturaRepository.generarFactura(idOrden);
     }
 }

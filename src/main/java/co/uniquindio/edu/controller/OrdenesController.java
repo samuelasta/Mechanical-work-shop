@@ -144,6 +144,11 @@ public class OrdenesController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "Repuesto actualizado correctamente"));
     }
 
+    @PatchMapping("/{idOrden}")
+    public ResponseEntity<ResponseDTO<String>> finalizarOrden(@PathVariable String idOrden) {
+        ordenesService.finalizarOrden(idOrden);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, "Orden finalizado correctamente"));
+    }
 
 
 

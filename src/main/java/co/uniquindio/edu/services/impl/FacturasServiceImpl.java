@@ -28,10 +28,15 @@ public class FacturasServiceImpl implements FacturasService {
         return facturaRepository.listaFacturasCliente(id);
     }
 
+    @Override
+    public void eliminarFactura(String idFactura, String idOrden) {
+        facturaRepository.eliminarFactura(idFactura, idOrden);
+    }
+
     // luego, es para ver todas las facturas
     @Override
     public List<ObtenerFacturaDTO> listaFacturas() {
-        return List.of();
+        return facturaRepository.listaFacturas();
     }
 
 }

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public record ObtenerFacturaDTO(String id,
                                 String consecutivo,
-                                EstadoFactura estado,
+                                String estado,
                                 LocalDateTime fechaEmision,
                                 double impuestos,
                                 double valorTotal,

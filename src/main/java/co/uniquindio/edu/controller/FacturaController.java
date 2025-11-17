@@ -6,10 +6,7 @@ import co.uniquindio.edu.services.FacturasService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,13 +40,17 @@ public class FacturaController {
     }
 
     // Consultar todas las facturas del cliente
-    @GetMapping("/{idCliente}/factura")
+    @GetMapping("/{idCliente}/clientes")
     public ResponseEntity<ResponseDTO<List<ObtenerFacturaDTO>>> obtenerFacturasPorCliente(@PathVariable String idCliente) {
         List<ObtenerFacturaDTO> facturas = facturaService.obtenerFacturasPorCliente(idCliente);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false, facturas));
     }
 
-
+    @DeleteMapping("/{idFactura}/ordenes/{idOrden}")
+    public ResponseEntity<ResponseDTO<String>> eliminarOrden(@PathVariable String idFactura ,@PathVariable String idOrden) {
+        facturaService.eliminarFactura(idFactura, idOrden);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(true, "Factura eliminada exitosamente"));
+    }
 
 
 

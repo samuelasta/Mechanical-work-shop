@@ -10,4 +10,5 @@ public interface FacturasService {
     List<ObtenerFacturaDTO> listaFacturasVehiculo(String placa);
     List<ObtenerFacturaDTO> listaFacturas();
     List<ObtenerFacturaDTO> obtenerFacturasPorCliente(String id);
+    void eliminarFactura(String idFactura, String idOrden);
 }

@@ -212,15 +212,21 @@ Content-Type: application/json
   "cantidad": 2
 }
 
+###
+
+// finalizar orden
+PATCH http://localhost:8080/api/ordenes/f0c3a046-7ee0-4f01-9cef-ccfbf48aabf5
+
+
 ### FacturaController Endpoints
 
-# Obtener factura por orden (falta)
+# Obtener factura por orden
 GET http://localhost:8080/api/facturas/b5d14bf4-29c9-47df-9295-b53502d67698/ordenes
 
 ###
 
-# Obtener facturas por placa de vehículo (falta)
-GET http://localhost:8080/api/facturas/{placa}/vehiculos
+# Obtener facturas por placa de vehículo
+GET http://localhost:8080/api/facturas/ABC123/vehiculos
 
 ###
 
@@ -229,8 +235,13 @@ GET http://localhost:8080/api/facturas
 
 ###
 
-# Obtener facturas por cliente (falta)
-GET http://localhost:8080/api/facturas/8b060c32-c3e7-46ef-b163-9143c011aece/factura
+# Obtener facturas por cliente (listo)
+GET http://localhost:8080/api/facturas/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d/clientes
+
+###
+
+# Eliminar una factura
+DELETE http://localhost:8080/api/facturas/b5a1f43b-720e-40f9-8e16-c72fb9f7776d/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698
 
 ###
 

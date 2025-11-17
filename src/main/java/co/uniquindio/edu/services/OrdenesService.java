@@ -31,4 +31,5 @@ public interface OrdenesService {
     void eliminarRepuesto(String idRepuesto, String idServicio, String idOrden);
     List<ObtenerRepuestoOrdenDTO> obtenerRepuestos(String idOrden, String idServicio);
     void actualizarRepuestoOrdenServicio(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO);
+    void finalizarOrden(String idOrden);
 }

@@ -505,4 +505,18 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
             throw new BadRequestException("Error al actualizar repuesto: " + e.getMessage());
         }
     }
+
+    public void finalizarOrden(String idOrden){
+        try {
+            String sql = """
+                UPDATE ORDEN SET ESTADO = ?
+                WHERE ID = ?
+            """;
+
+            jdbcTemplate.update(sql, "FINALIZADA", idOrden);
+
+        }catch (DataAccessException e){
+            throw new BadRequestException("Error al finalizar la orden: " + e.getMessage());
+        }
+    }
 }
