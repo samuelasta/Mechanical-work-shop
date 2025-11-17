@@ -20,15 +20,15 @@ public class RepuestosController {
 
     private final RepuestosService repuestosService;
 
-    @PostMapping()
-    public ResponseEntity<ResponseDTO<String>> crearRepuesto(@RequestBody CrearRepuestoDTO crearRepuestoDTO) {
-        repuestosService.crearRepuesto(crearRepuestoDTO);
+    @PostMapping("/{idProveedor}")
+    public ResponseEntity<ResponseDTO<String>> crearRepuesto(@RequestBody CrearRepuestoDTO crearRepuestoDTO, @PathVariable String idProveedor) {
+        repuestosService.crearRepuesto(crearRepuestoDTO, idProveedor);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  "repuesto creado exitosamente" ));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO<String>> actualizarRepuesto(@PathVariable String id, @RequestBody CrearRepuestoDTO crearRepuestoDTO) {
-        repuestosService.actualizarRepuesto(id, crearRepuestoDTO);
+    @PutMapping("/{id}/proveedores/{idProveedor}")
+    public ResponseEntity<ResponseDTO<String>> actualizarRepuesto(@PathVariable String id, @PathVariable String idProveedor, @RequestBody CrearRepuestoDTO crearRepuestoDTO) {
+        repuestosService.actualizarRepuesto(id, crearRepuestoDTO, idProveedor );
         return  ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  "repuesto actualizado exitosamente" ));
     }
 

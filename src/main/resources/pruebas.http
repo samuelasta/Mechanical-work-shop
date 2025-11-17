@@ -104,7 +104,8 @@ Content-Type: application/json
 {
   "descripcion": "Cambio de aceite y filtros",
   "fechaIngreso": "2023-10-01T10:00:00",
-  "fechaSalida": "2023-10-02T15:00:00"
+  "fechaSalida": null,
+  "idVehiculo": "92385571-707c-44c7-b44f-3c71635a6953"
 }
 
 ###
@@ -130,12 +131,12 @@ Content-Type: application/json
 ###
 
 # Eliminar mecánico de orden
-DELETE http://localhost:8080/api/ordenes/{idOrden}/mecanicos/{idMecanico}
+DELETE http://localhost:8080/api/ordenes/f0c3a046-7ee0-4f01-9cef-ccfbf48aabf5/mecanicos/699b5ab2-a8e1-4ebd-81d2-09506c19ba02
 
 ###
 
 # Obtener mecánicos por orden (listo)
-GET http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/mecanicos
+GET http://localhost:8080/api/ordenes/f0c3a046-7ee0-4f01-9cef-ccfbf48aabf5/mecanicos
 
 ###
 
@@ -151,7 +152,7 @@ Content-Type: application/json
 ###
 
 # Obtener diagnóstico (listo)
-GET http://localhost:8080/api/ordenes/b5d14bf4-29c9-47df-9295-b53502d67698/diagnosticos
+GET http://localhost:8080/api/ordenes/f0c3a046-7ee0-4f01-9cef-ccfbf48aabf5/diagnosticos
 
 ###
 
@@ -174,7 +175,9 @@ Content-Type: application/json
 {
   "rol": "SUPERVISOR",
   "horasTrabajadas": 3,
-  "fechaAsignacion": "2023-10-01T10:00:00"
+  "fechaAsignacion": "2023-10-01T10:00:00",
+  "idNuevoMecanico": "699b5ab2-a8e1-4ebd-81d2-09506c19ba02",
+  "idNuevoServicio": "68e245fc-0f0c-43ef-935f-f103127d5829"
 }
 
 ###
@@ -321,11 +324,11 @@ DELETE http://localhost:8080/api/proveedores/02147681-9ee1-44f1-8b70-e9f960624fe
 ### RepuestosController Endpoints
 
 # Crear repuesto (listo)
-POST http://localhost:8080/api/repuestos
+POST http://localhost:8080/api/repuestos/f9dc9ab2-959f-460e-b722-5a1e43fdb5cf
 Content-Type: application/json
 
 {
-  "nombre": "llanta",
+  "nombre": "patin de motor para renault logan",
   "costoUnitario": 15000.0,
   "stock": 50
 }
@@ -333,13 +336,13 @@ Content-Type: application/json
 ###
 
 # Actualizar repuesto (listo)
-PUT http://localhost:8080/api/repuestos/ec235b5b-7bff-4e0f-b010-21bf6204cd99
+PUT http://localhost:8080/api/repuestos/a953e38d-9e96-4724-a830-658256a9f6a2/proveedores/ecb3d0ed-d275-4771-94a4-a93a19f71062
 Content-Type: application/json
 
 {
   "nombre": "Filtro de aceite",
   "costoUnitario": 16000.0,
-  "stock": 45
+  "stock": 40
 }
 
 ###
@@ -355,7 +358,8 @@ GET http://localhost:8080/api/repuestos/ec235b5b-7bff-4e0f-b010-21bf6204cd99
 ###
 
 # Eliminar repuesto (listo)
-DELETE http://localhost:8080/api/repuestos/ec235b5b-7bff-4e0f-b010-21bf6204cd99
+DELETE http://localhost:8080/api/repuestos/fe5c8321-a94f-4717-8f2c-51997e594cd6
+
 
 ###
 

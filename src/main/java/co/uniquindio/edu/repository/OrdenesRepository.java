@@ -73,11 +73,20 @@ public class OrdenesRepository {
     @Transactional
     public void actualizarOrden(String id, ActualizarOrdenDTO actualizarOrdenDTO) {
 
-        String sqlOrden = "UPDATE ORDEN SET FECHAINGRESO=?, FECHASALIDA=?, DESCRIPCION=? WHERE ID =?";
-        jdbcTemplate.update(sqlOrden, 
+        if(actualizarOrdenDTO.fechaSalida() != null){
+            String sqlOrden = "UPDATE ORDEN SET FECHAINGRESO=?, FECHASALIDA=?, DESCRIPCION=?, VEHICULO_ID=? WHERE ID =?";
+            jdbcTemplate.update(sqlOrden,
                         Timestamp.valueOf(actualizarOrdenDTO.fechaIngreso()),
                         Timestamp.valueOf(actualizarOrdenDTO.fechaSalida()),
-                        actualizarOrdenDTO.descripcion(), id);   
+                        actualizarOrdenDTO.descripcion(), actualizarOrdenDTO.idVehiculo(), id);
+        }
+        else{
+            String sqlOrden = "UPDATE ORDEN SET FECHAINGRESO=?, FECHASALIDA=?, DESCRIPCION=?, VEHICULO_ID=? WHERE ID =?";
+            jdbcTemplate.update(sqlOrden,
+                    Timestamp.valueOf(actualizarOrdenDTO.fechaIngreso()),
+                    null,
+                    actualizarOrdenDTO.descripcion(), actualizarOrdenDTO.idVehiculo(), id);
+        }
     }
 
 
@@ -189,7 +198,7 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
     @Transactional
     public void eliminarMecanico(String idOrden, String idMecanico) {
     try {
-        String sql = "DELETE FROM MOS WHERE ORDEN_ID = ? AND MECANICO_ID = ?";
+        String sql = "DELETE FROM DTL_ORD_MEC WHERE ORDEN_ID = ? AND MECANICO_ID = ?";
         int filas = jdbcTemplate.update(sql, idOrden, idMecanico);
 
         if (filas == 0) {
@@ -309,34 +318,34 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
 
     // editar los datos de esa relación ternaria
 
-   @Transactional
+    @Transactional
     public void actualizarDetalleServicio(String idOrden, String idMecanico, String idServicio, DetalleServicioMecanicoDTO dto) {
-    try {
-
-        String sql = """
+        try {
+            String sql = """
             UPDATE MOS
-            SET ROL = ?, HORAS_TRABAJADAS = ?, FECHA_ASIGNACION = ?
+            SET ROL = ?, HORAS_TRABAJADAS = ?, FECHA_ASIGNACION = ?, MECANICO_ID = ?, SERVICIO_ID = ?
             WHERE ORDEN_ID = ? AND MECANICO_ID = ? AND SERVICIO_ID = ?
         """;
 
-        int filas = jdbcTemplate.update(sql,
-                dto.rol(),
-                dto.horasTrabajadas(),
-                Timestamp.valueOf(dto.fechaAsignacion()),
-                idOrden,
-                idMecanico,
-                idServicio
-        );
+            int filas = jdbcTemplate.update(sql,
+                    dto.rol(),
+                    dto.horasTrabajadas(),
+                    Timestamp.valueOf(dto.fechaAsignacion()),
+                    dto.idNuevoMecanico(),
+                    dto.idNuevoServicio(),
+                    idOrden,
+                    idMecanico,
+                    idServicio
+            );
 
-        if (filas == 0) {
-            throw new ResourceNotFoundException("No se encontró la relación ternaria para actualizar");
+            if (filas == 0) {
+                throw new ResourceNotFoundException("No se encontró la relación ternaria para actualizar");
+            }
+
+        } catch (DataAccessException e) {
+            throw new BadRequestException("Error al actualizar detalle del servicio: " + e.getMessage());
         }
-
-
-    } catch (DataAccessException e) {
-        throw new BadRequestException("Error al actualizar detalle del servicio: " + e.getMessage());
     }
-}
 
 
     // devueve la lista de todos los servicios(el mecanico que los hizo, rol, horas trabajadas y fechaAsignacion)

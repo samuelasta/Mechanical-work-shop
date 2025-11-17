@@ -20,7 +20,7 @@ public class RepuestosRepository {
 
 
     @Transactional
-    public void crearRepuesto(CrearRepuestoDTO crearRepuestoDTO) {
+    public void crearRepuesto(CrearRepuestoDTO crearRepuestoDTO, String idProveedor) {
 
         // Crear el ID del repuesto
         String repuestoId = UUID.randomUUID().toString();
@@ -39,11 +39,20 @@ public class RepuestosRepository {
                 "ACTIVO"
 
         );
+        // asignar repuesto y proveedor A la tabla intermedia
+        String sqlAsignarRepuestoProveedor = """
+            INSERT INTO PROVEEDORES_REPUESTO_FK (REPUESTO_ID, PROVEEDORES_ID) 
+            VALUES (?, ?) 
+        """;
+        jdbcTemplate.update(sqlAsignarRepuestoProveedor,
+                repuestoId,
+                idProveedor);
+
     }
 
 
     @Transactional
-    public void actualizarRepuesto(String id, CrearRepuestoDTO crearRepuestoDTO) {
+    public void actualizarRepuesto(String id, CrearRepuestoDTO crearRepuestoDTO, String idProveedor) {
 
         // Validar existencia del repuesto
         Integer count = jdbcTemplate.queryForObject(
@@ -71,6 +80,14 @@ public class RepuestosRepository {
                 crearRepuestoDTO.stock(),
                 id
         );
+        // Actualizar el proveedor asignado al repuesto
+        String sqlActualizarProveedor = """
+              UPDATE PROVEEDORES_REPUESTO_FK
+                SET PROVEEDORES_ID = ?
+                WHERE REPUESTO_ID = ?
+               """;
+
+        jdbcTemplate.update(sqlActualizarProveedor, idProveedor, id);
     }
 
 
@@ -78,8 +95,9 @@ public class RepuestosRepository {
     public List<ObtenerRepuestoDTO> listaRepuestos() {
 
         String sql = """
-            SELECT ID, NOMBRE, COSTOUNITARIO, STOCK
-              FROM REPUESTO
+            SELECT r.ID, r.NOMBRE, r.COSTOUNITARIO, r.STOCK, pr.PROVEEDORES_ID
+              FROM REPUESTO r
+              JOIN PROVEEDORES_REPUESTO_FK pr ON pr.REPUESTO_ID = r.ID
               WHERE ESTADO <> 'INACTIVO'
              ORDER BY NOMBRE
         """;
@@ -89,7 +107,8 @@ public class RepuestosRepository {
                         rs.getString("ID"),
                         rs.getString("NOMBRE"),
                         rs.getDouble("COSTOUNITARIO"),
-                        rs.getInt("STOCK")
+                        rs.getInt("STOCK"),
+                        rs.getString("PROVEEDORES_ID")
                 )
         );
     }
@@ -99,8 +118,9 @@ public class RepuestosRepository {
     public ObtenerRepuestoDTO obtenerRepuesto(String id) {
 
         String sql = """
-            SELECT ID, NOMBRE, COSTOUNITARIO, STOCK
+            SELECT r.ID, r.NOMBRE, r.COSTOUNITARIO, r.STOCK,  pr.PROVEEDORES_ID 
               FROM REPUESTO
+              JOIN PROVEEDORES_REPUESTO_FK pr ON pr.REPUESTO_ID = r.ID
              WHERE ID = ? AND ESTADO <> 'INACTIVO'
                               
         """;
@@ -111,7 +131,9 @@ public class RepuestosRepository {
                             rs.getString("ID"),
                             rs.getString("NOMBRE"),
                             rs.getDouble("COSTOUNITARIO"),
-                            rs.getInt("STOCK")
+                            rs.getInt("STOCK"),
+                            rs.getString("PROVEEDORES_ID")
+
                     ),
                     id
             );

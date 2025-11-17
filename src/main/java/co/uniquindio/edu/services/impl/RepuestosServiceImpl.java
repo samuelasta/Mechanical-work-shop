@@ -16,13 +16,13 @@ public class RepuestosServiceImpl implements RepuestosService {
     private final RepuestosRepository repuestosRepository;
 
     @Override
-    public void crearRepuesto(CrearRepuestoDTO crearRepuestoDTO) {
-        repuestosRepository.crearRepuesto(crearRepuestoDTO);
+    public void crearRepuesto(CrearRepuestoDTO crearRepuestoDTO, String idProveedor) {
+        repuestosRepository.crearRepuesto(crearRepuestoDTO, idProveedor);
     }
 
     @Override
-    public void actualizarRepuesto(String id, CrearRepuestoDTO crearRepuestoDTO) {
-        repuestosRepository.actualizarRepuesto(id, crearRepuestoDTO);
+    public void actualizarRepuesto(String id, CrearRepuestoDTO crearRepuestoDTO, String idProveedor) {
+        repuestosRepository.actualizarRepuesto(id, crearRepuestoDTO, idProveedor);
     }
 
     @Override
