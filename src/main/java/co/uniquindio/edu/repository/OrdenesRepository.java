@@ -1,6 +1,7 @@
 package co.uniquindio.edu.repository;
 
 import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
+import co.uniquindio.edu.dto.dashboard.DashBoardDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
@@ -33,6 +34,33 @@ public class OrdenesRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+
+    public DashBoardDTO obtenerDatos() {
+        try {
+            String sqlClientes = """
+            SELECT COUNT(*) FROM CLIENTES
+                            WHERE ESTADO <> 'INACTIVO'
+        """;
+            int clientes = jdbcTemplate.queryForObject(sqlClientes, Integer.class);
+
+            String sqlVehiculos = """
+            SELECT COUNT(*) FROM VEHICULO
+                WHERE ESTADO <> 'INACTIVO'
+        """;
+            int vehiculos = jdbcTemplate.queryForObject(sqlVehiculos, Integer.class);
+
+            String sqlOrdenes = """
+            SELECT COUNT(*) FROM ORDEN
+            WHERE ESTADO <> 'INACTIVA' AND ESTADO <> 'FINALIZADA'
+        """;
+            int ordenes = jdbcTemplate.queryForObject(sqlOrdenes, Integer.class);
+
+            return new DashBoardDTO(clientes, vehiculos, ordenes);
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("No se encontró el registro");
+        }
+    }
 
     @Transactional
     public void crearOrden(String idVehiculo, CrearOrdenDTO crearOrdenDTO) {
@@ -594,14 +622,27 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
             v.placa AS placa
         FROM Orden o
         JOIN Vehiculo v ON o.Vehiculo_id = v.id
+            
+            -- Se une la orden con el vehículo correspondiente para obtener la placa
+            
         LEFT JOIN Diagnostico d ON d.Orden_id = o.id
+            -- Se une opcionalmente con el diagnóstico (puede no existir aún)
+        
         WHERE o.id IN (
             SELECT ms.Orden_id
             FROM MOS ms
             JOIN DTL_SER_REP dsr ON ms.Servicio_id = dsr.Servicio_id
+            
+            -- Se relacionan los servicios asignados a la orden con los repuestos utilizados
+            
             WHERE dsr.Repuesto_id = ?
+            
+            -- Se filtra por el ID del repuesto recibido como parámetro
+            
         )
         ORDER BY o.fechaIngreso
+        -- Se ordenan las órdenes por fecha de ingreso (de más antigua a más reciente)
+        
     """;
 
         return jdbcTemplate.query(sql, new Object[]{idRepuesto}, (rs, rowNum) -> {
@@ -633,10 +674,16 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
                m.APELLIDO2,
                m.EMAIL,
                m.EXPERIENCIA,
+               
+               -- Subconsulta 1: IDs de órdenes pendientes asignadas al mecánico
+               
                (SELECT LISTAGG(DISTINCT o.ID, ', ') WITHIN GROUP (ORDER BY o.ID)
                 FROM ORDEN o
                 WHERE o.ID IN (SELECT mos.ORDEN_ID FROM MOS mos WHERE mos.MECANICO_ID = m.ID)
                   AND o.ESTADO = 'PENDIENTE') AS ordenesPendientes,
+                    
+                -- Subconsulta 2: Nombres de repuestos asignados a esas órdenes
+ 
                (SELECT LISTAGG(DISTINCT r.NOMBRE, ', ') WITHIN GROUP (ORDER BY r.NOMBRE)
                 FROM REPUESTO r
                 JOIN DTL_SER_REP dsr ON dsr.REPUESTO_ID = r.ID
@@ -644,6 +691,9 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
                   AND dsr.ORDEN_ID IN (SELECT mos.ORDEN_ID FROM MOS mos WHERE mos.MECANICO_ID = m.ID
                                        AND mos.ORDEN_ID IN (SELECT o.ID FROM ORDEN o WHERE o.ESTADO = 'PENDIENTE'))) AS repuestosAsignados
         FROM MECANICO m
+        
+        -- Solo mecánicos activos con al menos una orden pendiente
+        
         WHERE m.ESTADO <> 'INACTIVO'
           AND EXISTS (SELECT 1 FROM MOS mos
                       JOIN ORDEN o ON o.ID = mos.ORDEN_ID

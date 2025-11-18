@@ -551,3 +551,7 @@ Content-Type: application/json
   "password": "ADMIN"
 }
 
+###
+
+GET http://localhost:8080/api/dashboard
+

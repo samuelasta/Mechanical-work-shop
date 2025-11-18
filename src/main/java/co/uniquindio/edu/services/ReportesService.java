@@ -1,5 +1,6 @@
 package co.uniquindio.edu.services;
 
+import co.uniquindio.edu.dto.dashboard.DashBoardDTO;
 import co.uniquindio.edu.dto.factura.FacturaConOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
@@ -44,4 +45,6 @@ public interface ReportesService {
 
     // Reporte 10: Mecánicos con órdenes pendientes y repuestos asignados
     List<MecanicoPendienteDTO> listaMecanicosConOrdenesPendientesYRepuestos();
+
+    DashBoardDTO obtenerDatos();
 }

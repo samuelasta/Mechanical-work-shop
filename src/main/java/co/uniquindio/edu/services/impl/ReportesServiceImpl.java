@@ -1,5 +1,6 @@
 package co.uniquindio.edu.services.impl;
 
+import co.uniquindio.edu.dto.dashboard.DashBoardDTO;
 import co.uniquindio.edu.dto.factura.FacturaConOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
@@ -87,6 +88,11 @@ public class ReportesServiceImpl implements ReportesService {
     @Override
     public List<MecanicoPendienteDTO> listaMecanicosConOrdenesPendientesYRepuestos() {
         return ordenesRepository.listaMecanicosConOrdenesPendientesYRepuestos();
+    }
+
+    @Override
+    public DashBoardDTO obtenerDatos() {
+        return ordenesRepository.obtenerDatos();
     }
 
 }
