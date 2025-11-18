@@ -633,17 +633,21 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
                m.APELLIDO2,
                m.EMAIL,
                m.EXPERIENCIA,
-               LISTAGG(DISTINCT o.ID, ', ') WITHIN GROUP (ORDER BY o.ID) AS ordenesPendientes,
-               LISTAGG(DISTINCT r.NOMBRE, ', ') WITHIN GROUP (ORDER BY r.NOMBRE) AS repuestosAsignados
+               (SELECT LISTAGG(DISTINCT o.ID, ', ') WITHIN GROUP (ORDER BY o.ID)
+                FROM ORDEN o
+                WHERE o.ID IN (SELECT mos.ORDEN_ID FROM MOS mos WHERE mos.MECANICO_ID = m.ID)
+                  AND o.ESTADO = 'PENDIENTE') AS ordenesPendientes,
+               (SELECT LISTAGG(DISTINCT r.NOMBRE, ', ') WITHIN GROUP (ORDER BY r.NOMBRE)
+                FROM REPUESTO r
+                JOIN DTL_SER_REP dsr ON dsr.REPUESTO_ID = r.ID
+                WHERE dsr.SERVICIO_ID IN (SELECT mos.SERVICIO_ID FROM MOS mos WHERE mos.MECANICO_ID = m.ID)
+                  AND dsr.ORDEN_ID IN (SELECT mos.ORDEN_ID FROM MOS mos WHERE mos.MECANICO_ID = m.ID
+                                       AND mos.ORDEN_ID IN (SELECT o.ID FROM ORDEN o WHERE o.ESTADO = 'PENDIENTE'))) AS repuestosAsignados
         FROM MECANICO m
-        LEFT JOIN DTL_ORD_MEC dom ON dom.MECANICO_ID = m.ID
-        LEFT JOIN MOS mos ON mos.MECANICO_ID = m.ID
-        LEFT JOIN ORDEN o ON o.ID = COALESCE(dom.ORDEN_ID, mos.ORDEN_ID)
-        LEFT JOIN DTL_SER_REP dsr ON dsr.SERVICIO_ID = mos.SERVICIO_ID AND dsr.ORDEN_ID = o.ID
-        LEFT JOIN REPUESTO r ON r.ID = dsr.REPUESTO_ID
-        WHERE o.ESTADO = 'PENDIENTE'
-          AND m.ESTADO <> 'INACTIVO'
-          AND (dom.ORDEN_ID IS NOT NULL OR mos.ORDEN_ID IS NOT NULL)
+        WHERE m.ESTADO <> 'INACTIVO'
+          AND EXISTS (SELECT 1 FROM MOS mos
+                      JOIN ORDEN o ON o.ID = mos.ORDEN_ID
+                      WHERE mos.MECANICO_ID = m.ID AND o.ESTADO = 'PENDIENTE')
         GROUP BY m.ID, m.NOMBRE1, m.NOMBRE2, m.APELLIDO1, m.APELLIDO2, m.EMAIL, m.EXPERIENCIA
         ORDER BY m.APELLIDO1, m.NOMBRE1
     """;

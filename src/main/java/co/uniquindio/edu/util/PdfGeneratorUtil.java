@@ -528,6 +528,33 @@ public class PdfGeneratorUtil {
             title.setSpacingAfter(20);
             document.add(title);
 
+            // GRÁFICO
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            for (MecanicoPendienteDTO mecanico : mecanicos) {
+                dataset.addValue(mecanico.ordenesPendientes().size(), "Órdenes Pendientes", mecanico.nombre1() + " " + mecanico.apellido1());
+            }
+
+            JFreeChart chart = ChartFactory.createBarChart(
+                    "Órdenes Pendientes por Mecánico",
+                    "Mecánico",
+                    "Cantidad de Órdenes",
+                    dataset,
+                    PlotOrientation.VERTICAL,
+                    true, true, false
+            );
+
+            // Ajuste para que el eje Y muestre enteros
+            NumberAxis yAxis = (NumberAxis) chart.getCategoryPlot().getRangeAxis();
+            yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+            ByteArrayOutputStream chartOut = new ByteArrayOutputStream();
+            ChartUtils.writeChartAsPNG(chartOut, chart, 600, 400);
+            Image chartImage = Image.getInstance(chartOut.toByteArray());
+            chartImage.scaleToFit(500, 300);
+            chartImage.setAlignment(Element.ALIGN_CENTER);
+            chartImage.setSpacingAfter(20);
+            document.add(chartImage);
+
             // TABLA
             PdfPTable table = new PdfPTable(6);
             table.setWidthPercentage(100);
