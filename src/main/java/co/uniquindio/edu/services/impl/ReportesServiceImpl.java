@@ -1,11 +1,15 @@
 package co.uniquindio.edu.services.impl;
 
+import co.uniquindio.edu.dto.factura.FacturaConOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
+import co.uniquindio.edu.dto.mecanico.MecanicoPendienteDTO;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import co.uniquindio.edu.dto.repuesto.ObtenerRepuestoDTO;
 import co.uniquindio.edu.dto.servicio.ObtenerServicioDTO;
+import co.uniquindio.edu.repository.FacturaRepository;
+import co.uniquindio.edu.repository.OrdenesRepository;
 import co.uniquindio.edu.services.OrdenesService;
 import co.uniquindio.edu.services.ReportesService;
 import co.uniquindio.edu.services.RepuestosService;
@@ -14,6 +18,7 @@ import co.uniquindio.edu.util.PdfGeneratorUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +29,8 @@ public class ReportesServiceImpl implements ReportesService {
     private final OrdenesService ordenesService;
     private final ServiciosService serviciosService;
     private final RepuestosService repuestosService;
+    private final FacturaRepository facturaRepository;
+    private final OrdenesRepository ordenesRepository;
 
 
     // REPORTE 1
@@ -70,6 +77,16 @@ public class ReportesServiceImpl implements ReportesService {
     @Override
     public List<ObtenerOrdenDTO> listaOrdenesRepuesto(String idRepuesto) {
         return ordenesService.listaOrdenesRepuesto(idRepuesto);
+    }
+
+    @Override
+    public List<FacturaConOrdenDTO> listaFacturasConOrdenesEnRangoFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return facturaRepository.listaFacturasConOrdenesEnRangoFechas(fechaInicio, fechaFin);
+    }
+
+    @Override
+    public List<MecanicoPendienteDTO> listaMecanicosConOrdenesPendientesYRepuestos() {
+        return ordenesRepository.listaMecanicosConOrdenesPendientesYRepuestos();
     }
 
 }

@@ -1,12 +1,15 @@
 package co.uniquindio.edu.services;
 
+import co.uniquindio.edu.dto.factura.FacturaConOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
+import co.uniquindio.edu.dto.mecanico.MecanicoPendienteDTO;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import co.uniquindio.edu.dto.repuesto.ObtenerRepuestoDTO;
 import co.uniquindio.edu.dto.servicio.ObtenerServicioDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -35,4 +38,10 @@ public interface ReportesService {
 
     // Reporte 8
     List<ObtenerOrdenDTO> listaOrdenesRepuesto(String idRepuesto);
+
+    // Reporte 9: Facturas en rango de fechas con detalles de órdenes
+    List<FacturaConOrdenDTO> listaFacturasConOrdenesEnRangoFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin);
+
+    // Reporte 10: Mecánicos con órdenes pendientes y repuestos asignados
+    List<MecanicoPendienteDTO> listaMecanicosConOrdenesPendientesYRepuestos();
 }

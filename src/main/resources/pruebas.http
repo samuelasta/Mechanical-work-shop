@@ -524,4 +524,13 @@ GET http://localhost:8080/api/reportes/promedio-horas/pdf
 // Reporte 8 GET  - Órdenes que incluyen un repuesto específico (subconsultas)
 GET http://localhost:8080/api/reportes/ordenes-repuestos/dcdf1f34-22f8-4092-ac6a-deeb230c2bcd/pdf
 
+// Reporte 9: Facturas en rango de fechas con detalles de órdenes (subconsultas)
+GET http://localhost:8080/api/reportes/facturas-fechas/2023-01-01T00:00:00/2025-12-31T23:59:59/pdf
+
+###
+
+// Reporte 10: Mecánicos con órdenes pendientes y repuestos asignados (subconsultas)
+GET http://localhost:8080/api/reportes/mecanicos-pendientes/pdf
+
+###
 

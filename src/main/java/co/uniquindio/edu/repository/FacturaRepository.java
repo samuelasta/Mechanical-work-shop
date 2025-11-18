@@ -1,8 +1,10 @@
 package co.uniquindio.edu.repository;
 
 import co.uniquindio.edu.dto.factura.ObtenerFacturaDTO;
+import co.uniquindio.edu.dto.factura.FacturaConOrdenDTO;
 import co.uniquindio.edu.exception.ResourceNotFoundException;
 import co.uniquindio.edu.model.enums.EstadoFactura;
+import co.uniquindio.edu.model.enums.EstadoOrden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -186,5 +188,49 @@ public class FacturaRepository {
         }catch (DataAccessException e){
             throw new ResourceNotFoundException("Factura no encontrada o no se puedo eliminar por x motivo");
         }
+    }
+    public List<FacturaConOrdenDTO> listaFacturasConOrdenesEnRangoFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        String sql = """
+        SELECT f.ID AS idFactura,
+               f.CONSECUTIVO,
+               f.ESTADO AS estadoFactura,
+               f.FECHAEMISION,
+               f.IMPUESTOS,
+               f.VALORTOTAL,
+               o.ID AS idOrden,
+               o.DESCRIPCION AS descripcionOrden,
+               o.FECHAINGRESO,
+               o.FECHASALIDA,
+               o.ESTADO AS estadoOrden,
+               d.DIAGNOSTICOINICIAL,
+               d.DIAGNOSTICOFINAL,
+               v.PLACA AS placaVehiculo
+        FROM FACTURA f
+        JOIN ORDEN o ON f.ORDEN_ID = o.ID
+        LEFT JOIN DIAGNOSTICO d ON d.ORDEN_ID = o.ID
+        JOIN VEHICULO v ON v.ID = o.VEHICULO_ID
+        WHERE f.FECHAEMISION BETWEEN ? AND ?
+        ORDER BY f.FECHAEMISION DESC
+    """;
+
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> new FacturaConOrdenDTO(
+                        rs.getString("idFactura"),
+                        rs.getString("CONSECUTIVO"),
+                        rs.getString("estadoFactura"),
+                        rs.getTimestamp("FECHAEMISION").toLocalDateTime(),
+                        rs.getDouble("IMPUESTOS"),
+                        rs.getDouble("VALORTOTAL"),
+                        rs.getString("idOrden"),
+                        rs.getString("descripcionOrden"),
+                        rs.getTimestamp("FECHAINGRESO").toLocalDateTime(),
+                        rs.getTimestamp("FECHASALIDA") != null ? rs.getTimestamp("FECHASALIDA").toLocalDateTime() : null,
+                        EstadoOrden.valueOf(rs.getString("estadoOrden")),
+                        rs.getString("DIAGNOSTICOINICIAL"),
+                        rs.getString("DIAGNOSTICOFINAL"),
+                        rs.getString("placaVehiculo")
+                ),
+                fechaInicio, fechaFin
+        );
     }
 }

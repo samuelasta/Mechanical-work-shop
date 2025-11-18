@@ -4,6 +4,7 @@ import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
+import co.uniquindio.edu.dto.mecanico.MecanicoPendienteDTO;
 import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
 import lombok.RequiredArgsConstructor;
@@ -228,9 +229,9 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
         FROM DTL_ORD_MEC dom
         JOIN MECANICO m ON dom.MECANICO_ID = m.ID
         WHERE dom.ORDEN_ID = ?
-                          
+
         UNION
-                          
+
         SELECT
             m.ID,
             m.NOMBRE1,
@@ -620,6 +621,50 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
                     rs.getString("DIAGNOSTICOINICIAL"),
                     rs.getString("DIAGNOSTICOFINAL"),
                     rs.getString("PLACA")
+            );
+        });
+    }
+    public List<MecanicoPendienteDTO> listaMecanicosConOrdenesPendientesYRepuestos() {
+        String sql = """
+        SELECT m.ID AS idMecanico,
+               m.NOMBRE1,
+               m.NOMBRE2,
+               m.APELLIDO1,
+               m.APELLIDO2,
+               m.EMAIL,
+               m.EXPERIENCIA,
+               LISTAGG(DISTINCT o.ID, ', ') WITHIN GROUP (ORDER BY o.ID) AS ordenesPendientes,
+               LISTAGG(DISTINCT r.NOMBRE, ', ') WITHIN GROUP (ORDER BY r.NOMBRE) AS repuestosAsignados
+        FROM MECANICO m
+        LEFT JOIN DTL_ORD_MEC dom ON dom.MECANICO_ID = m.ID
+        LEFT JOIN MOS mos ON mos.MECANICO_ID = m.ID
+        LEFT JOIN ORDEN o ON o.ID = COALESCE(dom.ORDEN_ID, mos.ORDEN_ID)
+        LEFT JOIN DTL_SER_REP dsr ON dsr.SERVICIO_ID = mos.SERVICIO_ID AND dsr.ORDEN_ID = o.ID
+        LEFT JOIN REPUESTO r ON r.ID = dsr.REPUESTO_ID
+        WHERE o.ESTADO = 'PENDIENTE'
+          AND m.ESTADO <> 'INACTIVO'
+          AND (dom.ORDEN_ID IS NOT NULL OR mos.ORDEN_ID IS NOT NULL)
+        GROUP BY m.ID, m.NOMBRE1, m.NOMBRE2, m.APELLIDO1, m.APELLIDO2, m.EMAIL, m.EXPERIENCIA
+        ORDER BY m.APELLIDO1, m.NOMBRE1
+    """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            String ordenesStr = rs.getString("ordenesPendientes");
+            List<String> ordenesPendientes = ordenesStr != null ? List.of(ordenesStr.split(", ")) : List.of();
+
+            String repuestosStr = rs.getString("repuestosAsignados");
+            List<String> repuestosAsignados = repuestosStr != null ? List.of(repuestosStr.split(", ")) : List.of();
+
+            return new MecanicoPendienteDTO(
+                    rs.getString("idMecanico"),
+                    rs.getString("NOMBRE1"),
+                    rs.getString("NOMBRE2"),
+                    rs.getString("APELLIDO1"),
+                    rs.getString("APELLIDO2"),
+                    rs.getString("EMAIL"),
+                    rs.getInt("EXPERIENCIA"),
+                    ordenesPendientes,
+                    repuestosAsignados
             );
         });
     }

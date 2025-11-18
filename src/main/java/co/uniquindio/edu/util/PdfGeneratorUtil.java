@@ -1,7 +1,9 @@
 package co.uniquindio.edu.util;
 
+import co.uniquindio.edu.dto.factura.FacturaConOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
+import co.uniquindio.edu.dto.mecanico.MecanicoPendienteDTO;
 import co.uniquindio.edu.dto.repuesto.ObtenerRepuestoDTO;
 import co.uniquindio.edu.dto.servicio.ObtenerServicioDTO;
 import co.uniquindio.edu.exception.BadRequestException;
@@ -456,6 +458,107 @@ public class PdfGeneratorUtil {
 
         } catch (Exception e) {
             throw new RuntimeException("Error generando PDF de órdenes", e);
+        }
+    }
+
+    public static byte[] generarPDFFacturasConOrdenes(List<FacturaConOrdenDTO> facturas) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+
+            Document document = new Document(PageSize.A4.rotate());
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            // TITULO
+            Font titleFont = new Font(Font.HELVETICA, 18, Font.BOLD, new Color(33, 66, 99));
+            Paragraph title = new Paragraph("Facturas en Rango de Fechas con Detalles de Órdenes", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(20);
+            document.add(title);
+
+            // TABLA
+            PdfPTable table = new PdfPTable(10);
+            table.setWidthPercentage(100);
+            table.setWidths(new float[]{1.5f, 1, 1, 2, 1.5f, 1.5f, 2, 2, 2, 1.5f});
+
+            // ENCABEZADOS
+            Stream.of("ID Factura", "Consecutivo", "Estado Factura", "Fecha Emisión", "Impuestos", "Valor Total",
+                      "ID Orden", "Fecha Ingreso", "Estado Orden", "Placa Vehículo")
+                    .forEach(header -> {
+                        PdfPCell cell = new PdfPCell(new Phrase(header, new Font(Font.HELVETICA, 10, Font.BOLD)));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(new Color(230, 230, 250));
+                        cell.setPadding(4);
+                        table.addCell(cell);
+                    });
+
+            // LOS DATOS
+            for (FacturaConOrdenDTO factura : facturas) {
+                table.addCell(new Phrase(factura.idFactura()));
+                table.addCell(new Phrase(factura.consecutivo()));
+                table.addCell(new Phrase(factura.estadoFactura()));
+                table.addCell(new Phrase(factura.fechaEmision().toString()));
+                table.addCell(new Phrase(String.valueOf(factura.impuestos())));
+                table.addCell(new Phrase(String.valueOf(factura.valorTotal())));
+                table.addCell(new Phrase(factura.idOrden()));
+                table.addCell(new Phrase(factura.fechaIngreso().toString()));
+                table.addCell(new Phrase(factura.estadoOrden().name()));
+                table.addCell(new Phrase(factura.placaVehiculo()));
+            }
+
+            document.add(table);
+            document.close();
+            return out.toByteArray();
+
+        } catch (Exception e) {
+            throw new BadRequestException("Error generando PDF de facturas con órdenes");
+        }
+    }
+
+    public static byte[] generarPDFMecanicosPendientes(List<MecanicoPendienteDTO> mecanicos) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+
+            Document document = new Document(PageSize.A4.rotate());
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            // TITULO
+            Font titleFont = new Font(Font.HELVETICA, 18, Font.BOLD, new Color(33, 66, 99));
+            Paragraph title = new Paragraph("Mecánicos con Órdenes Pendientes y Repuestos Asignados", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(20);
+            document.add(title);
+
+            // TABLA
+            PdfPTable table = new PdfPTable(6);
+            table.setWidthPercentage(100);
+            table.setWidths(new float[]{1.5f, 2, 2, 2, 3, 3});
+
+            // ENCABEZADOS
+            Stream.of("ID Mecánico", "Nombre", "Apellido", "Email", "Órdenes Pendientes", "Repuestos Asignados")
+                    .forEach(header -> {
+                        PdfPCell cell = new PdfPCell(new Phrase(header, new Font(Font.HELVETICA, 12, Font.BOLD)));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(new Color(230, 230, 250));
+                        cell.setPadding(6);
+                        table.addCell(cell);
+                    });
+
+            // LOS DATOS
+            for (MecanicoPendienteDTO mecanico : mecanicos) {
+                table.addCell(new Phrase(mecanico.idMecanico()));
+                table.addCell(new Phrase((mecanico.nombre1() != null ? mecanico.nombre1() : "") + " " + (mecanico.nombre2() != null ? mecanico.nombre2() : "")));
+                table.addCell(new Phrase((mecanico.apellido1() != null ? mecanico.apellido1() : "") + " " + (mecanico.apellido2() != null ? mecanico.apellido2() : "")));
+                table.addCell(new Phrase(mecanico.email()));
+                table.addCell(new Phrase(String.join(", ", mecanico.ordenesPendientes())));
+                table.addCell(new Phrase(String.join(", ", mecanico.repuestosAsignados())));
+            }
+
+            document.add(table);
+            document.close();
+            return out.toByteArray();
+
+        } catch (Exception e) {
+            throw new BadRequestException("Error generando PDF de mecánicos pendientes");
         }
     }
 }

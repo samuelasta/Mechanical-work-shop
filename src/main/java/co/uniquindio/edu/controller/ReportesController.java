@@ -1,8 +1,10 @@
 package co.uniquindio.edu.controller;
 
+import co.uniquindio.edu.dto.factura.FacturaConOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
 import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
+import co.uniquindio.edu.dto.mecanico.MecanicoPendienteDTO;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import co.uniquindio.edu.dto.repuesto.ObtenerRepuestoDTO;
 import co.uniquindio.edu.dto.response.ResponseDTO;
@@ -15,11 +17,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -158,6 +159,33 @@ public class ReportesController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reporte_ordenes_repuesto")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
+    /** Reporte 9: Facturas en rango de fechas con detalles de órdenes
+    @GetMapping("/facturas-fechas/{fechaInicio}/{fechaFin}/pdf")
+    public ResponseEntity<byte[]> reporteFacturasFechasPDF(@RequestBody ) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime inicio = LocalDateTime.parse(fechaInicio, formatter);
+        LocalDateTime fin = LocalDateTime.parse(fechaFin, formatter);
+        List<FacturaConOrdenDTO> lista = reportesService.listaFacturasConOrdenesEnRangoFechas(inicio, fin);
+        byte[] pdf = PdfGeneratorUtil.generarPDFFacturasConOrdenes(lista);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reporte_facturas_fechas.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }*/
+
+    // Reporte 10: Mecánicos con órdenes pendientes y repuestos asignados
+    @GetMapping("/mecanicos-pendientes/pdf")
+    public ResponseEntity<byte[]> reporteMecanicosPendientesPDF() {
+        List<MecanicoPendienteDTO> lista = reportesService.listaMecanicosConOrdenesPendientesYRepuestos();
+        byte[] pdf = PdfGeneratorUtil.generarPDFMecanicosPendientes(lista);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reporte_mecanicos_pendientes.pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdf);
     }
