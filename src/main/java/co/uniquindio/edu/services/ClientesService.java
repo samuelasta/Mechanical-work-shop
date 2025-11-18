@@ -1,6 +1,7 @@
 package co.uniquindio.edu.services;
 
 import co.uniquindio.edu.dto.cliente.CrearClienteDTO;
+import co.uniquindio.edu.dto.cliente.LoginDTO;
 import co.uniquindio.edu.dto.cliente.ObtenerClienteDTO;
 import co.uniquindio.edu.dto.factura.ObtenerFacturaDTO;
 
@@ -12,6 +13,7 @@ public interface ClientesService {
     void eliminarCliente(String id);
     void actualizarCliente(String id, CrearClienteDTO CrearClienteDTO);
     ObtenerClienteDTO obtenerCliente(String id);
+    Boolean login(LoginDTO loginDTO);
 
 
 

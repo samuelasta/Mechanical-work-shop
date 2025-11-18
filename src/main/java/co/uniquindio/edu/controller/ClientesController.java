@@ -1,6 +1,7 @@
 package co.uniquindio.edu.controller;
 
 import co.uniquindio.edu.dto.cliente.CrearClienteDTO;
+import co.uniquindio.edu.dto.cliente.LoginDTO;
 import co.uniquindio.edu.dto.cliente.ObtenerClienteDTO;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import co.uniquindio.edu.dto.response.ResponseDTO;
@@ -70,4 +71,9 @@ public class ClientesController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO<>(false,  listaClientes));
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDTO<Boolean>> loginCliente(@RequestBody LoginDTO loginDTO){
+        Boolean login = clienteService.login(loginDTO);
+        return ResponseEntity.status(HttpStatus.OK).body( new ResponseDTO<>(false,  login));
+    }
 }

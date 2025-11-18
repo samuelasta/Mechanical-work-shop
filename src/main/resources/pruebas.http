@@ -526,6 +526,7 @@ GET http://localhost:8080/api/reportes/ordenes-repuestos/dcdf1f34-22f8-4092-ac6a
 
 
 ###
+
 // Reporte 9: Facturas en rango de fechas con detalles de órdenes (subconsultas)
 POST http://localhost:8080/api/reportes/facturas-fechas/pdf
 Content-Type: application/json
@@ -541,4 +542,12 @@ Content-Type: application/json
 GET http://localhost:8080/api/reportes/mecanicos-pendientes/pdf
 
 ###
+
+POST http://localhost:8080/api/clientes/login
+Content-Type: application/json
+
+{
+  "username": "ADMIN",
+  "password": "ADMIN"
+}
 

@@ -1,6 +1,7 @@
 package co.uniquindio.edu.services.impl;
 
 import co.uniquindio.edu.dto.cliente.CrearClienteDTO;
+import co.uniquindio.edu.dto.cliente.LoginDTO;
 import co.uniquindio.edu.dto.cliente.ObtenerClienteDTO;
 import co.uniquindio.edu.dto.factura.ObtenerFacturaDTO;
 import co.uniquindio.edu.repository.ClienteRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -37,6 +39,11 @@ public class ClientesServiceImpl implements ClientesService {
     @Override
     public ObtenerClienteDTO obtenerCliente(String id) {
         return clienteRepository.obtenerCliente(id);
+    }
+
+    @Override
+    public Boolean login(LoginDTO loginDTO) {
+        return Objects.equals(loginDTO.username(), "ADMIN") && Objects.equals(loginDTO.password(), "ADMIN");
     }
 
 }
