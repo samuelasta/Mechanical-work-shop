@@ -215,8 +215,8 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
     @Transactional(readOnly = true)
     public List<ObtenerMecanicoOrdenDTO> obtenerMecanicosPorOrden(String idOrden) {
 
-    String sql = """
-        SELECT\s
+        String sql = """
+        SELECT
             m.ID,
             m.NOMBRE1,
             m.NOMBRE2,
@@ -225,42 +225,41 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
             m.EMAIL,
             m.EXPERIENCIA,
             dom.ROL
-            FROM DTL_ORD_MEC dom
-            JOIN MECANICO m ON dom.MECANICO_ID = m.ID
-            WHERE dom.ORDEN_ID = ?
-                              
-            UNION
-                              
-            SELECT\s
+        FROM DTL_ORD_MEC dom
+        JOIN MECANICO m ON dom.MECANICO_ID = m.ID
+        WHERE dom.ORDEN_ID = ?
+                          
+        UNION
+                          
+        SELECT
             m.ID,
             m.NOMBRE1,
-                                  m.NOMBRE2,
-                                  m.APELLIDO1,
-                                  m.APELLIDO2,
-                                  m.EMAIL,
-                                  m.EXPERIENCIA,
-                                  NULL AS ROL
-                              FROM MOS mos
-                              JOIN MECANICO m ON mos.MECANICO_ID = m.ID
-                              WHERE mos.ORDEN_ID = ?
+            m.NOMBRE2,
+            m.APELLIDO1,
+            m.APELLIDO2,
+            m.EMAIL,
+            m.EXPERIENCIA,
+            mos.ROL
+        FROM MOS mos
+        JOIN MECANICO m ON mos.MECANICO_ID = m.ID
+        WHERE mos.ORDEN_ID = ?
     """;
 
-    try {
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new ObtenerMecanicoOrdenDTO(
-                rs.getString("ID"),
-                rs.getString("NOMBRE1"),
-                rs.getString("NOMBRE2"),
-                rs.getString("APELLIDO1"),
-                rs.getString("APELLIDO2"),
-                rs.getString("EMAIL"),
-                rs.getString("ROL"),
-                rs.getInt("EXPERIENCIA")
-                ), idOrden, idOrden);
-
-    } catch (DataAccessException e) {
-        throw new BadRequestException("Error al obtener los mecánicos de la orden: " + e.getMessage());
+        try {
+            return jdbcTemplate.query(sql, (rs, rowNum) -> new ObtenerMecanicoOrdenDTO(
+                    rs.getString("ID"),
+                    rs.getString("NOMBRE1"),
+                    rs.getString("NOMBRE2"),
+                    rs.getString("APELLIDO1"),
+                    rs.getString("APELLIDO2"),
+                    rs.getString("EMAIL"),
+                    rs.getString("ROL"),           // ← Esto mapea al parámetro "rolDTO" del constructor
+                    rs.getInt("EXPERIENCIA")
+            ), idOrden, idOrden);
+        } catch (DataAccessException e) {
+            throw new BadRequestException("Error al obtener los mecánicos de la orden: " + e.getMessage());
+        }
     }
-}
 
 
 
