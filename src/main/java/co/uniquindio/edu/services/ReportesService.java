@@ -2,11 +2,13 @@ package co.uniquindio.edu.services;
 
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
+import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import co.uniquindio.edu.dto.repuesto.ObtenerRepuestoDTO;
 import co.uniquindio.edu.dto.servicio.ObtenerServicioDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ReportesService {
 
@@ -24,4 +26,13 @@ public interface ReportesService {
 
     // Reporte 5 (lista de ordenes del cliente)
     List<ObtenerOrdenDTO> listaOrdenesCliente(String id);
+
+    // Reporte 6(Ingresos de las ordenes finalizadas
+    Map<String, Double> obtenerIngresosPorOrdenFinalizada();
+
+    // Reporte 7
+    List<PromedioHorasDTO> obtenerPromedioHorasPorMecanico();
+
+    // Reporte 8
+    List<ObtenerOrdenDTO> listaOrdenesRepuesto(String idRepuesto);
 }

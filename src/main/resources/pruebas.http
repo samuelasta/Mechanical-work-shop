@@ -510,3 +510,16 @@ GET http://localhost:8080/api/reportes/mecanicos/f0c3a046-7ee0-4f01-9cef-ccfbf48
 GET http://localhost:8080/api/reportes/ordenes/f3be5f2d-8ebd-41dc-98b0-334f7c1b275d/clientes/pdf
 
 ###
+
+// Reporte 6 Intermedio Grafico:
+GET http://localhost:8080/api/reportes/ingresos/pdf
+
+###
+
+// Reporte 7 Intermedio Grafico:
+GET http://localhost:8080/api/reportes/promedio-horas/pdf
+
+###
+
+// Reporte 8 GET  - Órdenes que incluyen un repuesto específico (subconsultas)
+GET http://localhost:8080/api/reportes/ordenes-repuestos/dcdf1f34-22f8-4092-ac6a-deeb230c2bcd/pdf

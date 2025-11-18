@@ -3,6 +3,7 @@ package co.uniquindio.edu.services;
 import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
+import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
 import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
@@ -10,6 +11,7 @@ import co.uniquindio.edu.model.enums.Rol;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OrdenesService {
 
@@ -32,4 +34,7 @@ public interface OrdenesService {
     List<ObtenerRepuestoOrdenDTO> obtenerRepuestos(String idOrden, String idServicio);
     void actualizarRepuestoOrdenServicio(String idRepuesto, String idServicio, String idOrden, RepuestosServicioDTO repuestosServicioDTO);
     void finalizarOrden(String idOrden);
+    Map<String, Double> obtenerIngresosPorOrdenFinalizadas();
+    List<PromedioHorasDTO> obtenerPromedioHorasPorMecanico();
+    List<ObtenerOrdenDTO> listaOrdenesRepuesto(String idRepuesto);
 }

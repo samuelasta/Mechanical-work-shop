@@ -3,6 +3,7 @@ package co.uniquindio.edu.services.impl;
 import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
+import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
 import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -122,5 +124,20 @@ public class OrdenesServiceImpl implements OrdenesService {
     public void finalizarOrden(String idOrden) {
         ordenesRepository.finalizarOrden(idOrden);
         facturaRepository.generarFactura(idOrden);
+    }
+
+    @Override
+    public Map<String, Double> obtenerIngresosPorOrdenFinalizadas() {
+        return ordenesRepository.obtenerIngresosPorOrdenFinalizada();
+    }
+
+    @Override
+    public List<PromedioHorasDTO> obtenerPromedioHorasPorMecanico() {
+        return ordenesRepository.consultarPromedioHorasPorMecanico();
+    }
+
+    @Override
+    public List<ObtenerOrdenDTO> listaOrdenesRepuesto(String idRepuesto) {
+        return ordenesRepository.listaOrdenesRepuesto(idRepuesto);
     }
 }

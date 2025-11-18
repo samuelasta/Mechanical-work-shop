@@ -2,6 +2,7 @@ package co.uniquindio.edu.repository;
 
 import co.uniquindio.edu.dto.CrearDiagnosticoDTO;
 import co.uniquindio.edu.dto.mecanico.ObtenerMecanicoOrdenDTO;
+import co.uniquindio.edu.dto.mecanico.PromedioHorasDTO;
 import co.uniquindio.edu.dto.mecanico.RolDTO;
 import co.uniquindio.edu.dto.orden.*;
 import co.uniquindio.edu.dto.servicio.DetalleServicioMecanicoDTO;
@@ -20,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import co.uniquindio.edu.dto.orden.ObtenerOrdenDTO;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -533,5 +536,92 @@ public void asignarMecanico(String idOrden, String idMecanico, RolDTO rolDTO) {
         }catch (DataAccessException e){
             throw new BadRequestException("Error al finalizar la orden: " + e.getMessage());
         }
+    }
+
+    public Map<String, Double> obtenerIngresosPorOrdenFinalizada(){
+        String sql = """
+        SELECT o.ID AS ordenId, SUM(f.VALORTOTAL) AS ingresoTotal
+        FROM FACTURA f
+        JOIN ORDEN o ON f.ORDEN_ID = o.ID
+        WHERE o.ESTADO = 'FINALIZADA'
+        GROUP BY o.ID
+    """;
+
+        return jdbcTemplate.query(sql, rs -> {
+            Map<String, Double> resultado = new LinkedHashMap<>();
+            while (rs.next()) {
+                resultado.put(rs.getString("ordenId"), rs.getDouble("ingresoTotal"));
+            }
+            return resultado;
+        });
+
+    }
+
+    public List<PromedioHorasDTO> consultarPromedioHorasPorMecanico() {
+        String sql = """
+   SELECT
+       m.ID AS mecanicoId,
+       m.NOMBRE1 AS nombre1,
+       m.APELLIDO1 AS apellido1,
+       TO_CHAR(mos.FECHA_ASIGNACION, 'YYYY-MM') AS MES,
+       AVG(mos.HORAS_TRABAJADAS) AS PROMEDIOHORAS
+   FROM MOS mos
+   JOIN MECANICO m ON mos.MECANICO_ID = m.ID
+   GROUP BY m.ID, m.NOMBRE1, m.APELLIDO1, TO_CHAR(mos.FECHA_ASIGNACION, 'YYYY-MM')
+   ORDER BY TO_CHAR(mos.FECHA_ASIGNACION, 'YYYY-MM'), m.NOMBRE1, m.APELLIDO1
+   """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            String nombreCompleto = rs.getString("nombre1") + " " + rs.getString("apellido1");
+            return new PromedioHorasDTO(
+                    rs.getString("mecanicoId"),
+                    nombreCompleto,
+                    rs.getString("MES"),
+                    rs.getDouble("PROMEDIOHORAS")
+            );
+        });
+    }
+
+    public List<ObtenerOrdenDTO> listaOrdenesRepuesto(String idRepuesto) {
+        String sql = """
+        SELECT 
+            o.id AS id,
+            o.descripcion AS descripcion,
+            o.fechaIngreso AS fechaIngreso,
+            o.fechasalida AS fechaSalida,
+            d.diagnosticoInicial AS diagnosticoInicial,
+            d.diagnosticoFinal AS diagnosticoFinal,
+            v.placa AS placa
+        FROM Orden o
+        JOIN Vehiculo v ON o.Vehiculo_id = v.id
+        LEFT JOIN Diagnostico d ON d.Orden_id = o.id
+        WHERE o.id IN (
+            SELECT ms.Orden_id
+            FROM MOS ms
+            JOIN DTL_SER_REP dsr ON ms.Servicio_id = dsr.Servicio_id
+            WHERE dsr.Repuesto_id = ?
+        )
+        ORDER BY o.fechaIngreso
+    """;
+
+        return jdbcTemplate.query(sql, new Object[]{idRepuesto}, (rs, rowNum) -> {
+            LocalDateTime fechaIngreso = rs.getTimestamp("FECHAINGRESO").toLocalDateTime();
+            LocalDateTime fechaSalida = rs.getTimestamp("FECHASALIDA") != null
+                    ? rs.getTimestamp("FECHASALIDA").toLocalDateTime()
+                    : null;
+
+            EstadoOrden estado = (fechaSalida == null) ? EstadoOrden.PENDIENTE : EstadoOrden.FINALIZADA;
+
+            return new ObtenerOrdenDTO(
+                    rs.getString("ID"),
+                    rs.getString("DESCRIPCION"),
+                    fechaIngreso,
+                    fechaSalida,
+                    estado,
+                    rs.getString("DIAGNOSTICOINICIAL"),
+                    rs.getString("DIAGNOSTICOFINAL"),
+                    rs.getString("PLACA")
+            );
+        });
     }
 }
